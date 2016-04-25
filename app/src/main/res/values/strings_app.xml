@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">IDScaner2016</string>
+
+    <dimen name="check_480x320">0px</dimen>
+
+    <string name="scancard_title">身份证信息</string>
+    <string name="scancard_name">姓 名</string>
+    <string name="scancard_sex">性 别</string>
+    <string name="scancard_nation">民 族</string>
+    <string name="scancard_birthday">出 生</string>
+    <string name="scancard_address">住 址</string>
+    <string name="scancard_idnumber">公民身份证码</string>
+
+</resources>

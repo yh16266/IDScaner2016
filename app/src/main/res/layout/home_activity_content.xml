@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/rlt_maincard"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="500dp"
+    android:layout_height="300dp"
+    android:layout_margin="10dp"
+    android:background="@mipmap/img_idcard_bg" >
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="30dp"
+        style="@style/card_lable"
+        android:text="@string/scancard_name" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        style="@style/card_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="28dp"
+        android:text="@string/scancard_sex" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        style="@style/card_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView01"
+        android:layout_below="@+id/TextView01"
+        android:layout_marginTop="28dp"
+        android:text="@string/scancard_birthday" />
+
+    <TextView
+        android:id="@+id/TextView03"
+        style="@style/card_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView02"
+        android:layout_below="@+id/TextView02"
+        android:layout_marginTop="28dp"
+        android:text="@string/scancard_address" />
+
+    <TextView
+        android:id="@+id/tv_idnum_lable"
+        style="@style/card_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView03"
+        android:layout_below="@+id/TextView03"
+        android:layout_marginTop="28dp"
+        android:text="@string/scancard_idnumber" />
+
+    <ImageView
+        android:id="@+id/img_headicon"
+        android:layout_width="100dp"
+        android:layout_height="120dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_marginRight="40dp"
+        android:src="@mipmap/icon_default_male" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/card_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView4"
+        android:layout_alignBottom="@+id/textView4"
+        tools:text="张三"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/textView4"/>
+
+    <TextView
+        android:id="@+id/tv_sex"
+        style="@style/card_info_text"
+        tools:text="男"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TextView01"
+        android:layout_alignBottom="@+id/TextView01"
+        android:layout_alignLeft="@+id/tv_name"/>
+
+    <TextView
+        android:id="@+id/tv_nation"
+        style="@style/card_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TextView05"
+        android:layout_alignBottom="@+id/TextView05"
+        android:layout_marginLeft="20dp"
+        tools:text="中国"
+        android:layout_toRightOf="@+id/TextView05"/>
+
+    <TextView
+        android:id="@+id/tv_birthday"
+        style="@style/card_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1982年10月25日"
+        android:layout_alignBaseline="@+id/TextView02"
+        android:layout_alignBottom="@+id/TextView02"
+        android:layout_alignLeft="@+id/tv_sex"/>
+
+    <TextView
+        android:id="@+id/tv_address"
+        style="@style/card_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="北京市橙路区22号"
+        android:layout_alignBaseline="@+id/TextView03"
+        android:layout_alignBottom="@+id/TextView03"
+        android:layout_alignLeft="@+id/tv_birthday"
+        android:layout_toLeftOf="@+id/img_headicon"/>
+
+    <TextView
+        android:id="@+id/TextView05"
+        style="@style/card_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TextView01"
+        android:layout_alignBottom="@+id/TextView01"
+        android:layout_marginLeft="130dp"
+        android:text="@string/scancard_nation" />
+
+    <TextView
+        android:id="@+id/tv_idnumber"
+        style="@style/card_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_idnum_lable"
+        android:layout_alignBottom="@+id/tv_idnum_lable"
+        android:layout_marginLeft="26dp"
+        tools:text="510622198804052011"
+        android:layout_toRightOf="@+id/tv_idnum_lable"/>
+
+</RelativeLayout>

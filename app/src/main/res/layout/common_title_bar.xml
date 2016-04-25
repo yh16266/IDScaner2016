@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/title_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="@color/app_skin_red">
+
+    <ImageButton
+        android:id="@+id/title_left_img_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingRight="25dp"
+        android:paddingEnd="25dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="visible"
+        android:background="@drawable/transparent_btn_selector_xml"
+        android:src="@mipmap/icon_arrow_left" />
+
+        <Button
+	        android:id="@+id/title_left_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+        	android:layout_centerVertical="true"
+        	android:layout_alignParentLeft="true"
+        	android:layout_alignParentStart="true"
+	        android:text="@string/app_name"
+	        android:paddingLeft="15dp"
+	        android:paddingRight="15dp"
+	        android:paddingTop="10dp"
+	        android:paddingBottom="10dp"
+	        android:textColor="@color/white"
+	        android:background="@drawable/transparent_btn_selector_xml"
+	        android:visibility="gone"
+			android:textSize="@dimen/font_size_36"/>
+    
+    <TextView
+        android:id="@+id/txv_titlebar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+		android:textColor="@color/white"
+		android:layout_centerInParent="true"
+		android:textSize="@dimen/font_size_55"/>
+
+    <ImageButton
+        android:id="@+id/title_right_img_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:background="@color/transparent"
+        android:src="@mipmap/icon_user" />
+
+    <Button
+        android:id="@+id/title_right_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:text="@string/app_name"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/white"
+        android:background="@drawable/transparent_btn_selector_xml"
+        android:visibility="gone"
+		android:textSize="@dimen/font_size_36"/>
+
+</RelativeLayout>

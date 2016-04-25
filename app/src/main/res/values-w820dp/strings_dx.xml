@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="progress_text">请稍等……</string>
+    
+	<string name="can_not_play">无法播放</string>
+	<string name="audio_time">%1$s秒</string>
+    <string name="audio_time2">%1$s分</string>
+    <string name="audio_time3">%1$s分 %2$s秒</string>
+    
+    <string name="audio_record_hint">您还可以说话</string>
+    <string name="audio_record_cancel">取消</string>
+    <string name="audio_record_complete">完成</string>
+    <string name="audio_record_second_setting">%1$s秒</string>
+    <string name="audio_record_hint_limit">录音时间已达到上限，请点击确定键发送。</string>
+    
+	<!-- 上拉下拉 -->
+    <string name="xlistview_header_hint_normal">下拉刷新</string>
+    <string name="xlistview_header_hint_ready">释放立即刷新</string>
+    <string name="xlistview_header_hint_loading">正在刷新...</string>
+    <string name="xlistview_header_last_time">上次更新：</string>
+    <string name="xlistview_header_notime">暂无数据更新</string>
+    <string name="xlistview_footer_hint_normal">查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+
+</resources>

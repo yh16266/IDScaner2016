@@ -1,0 +1,19 @@
+<resources>
+
+    <dimen name="font_size_180">45dp</dimen>
+    <dimen name="font_size_135">34dp</dimen>
+    <dimen name="font_size_110">33dp</dimen>
+    <dimen name="font_size_95">28.5dp</dimen>
+    <dimen name="font_size_90">27dp</dimen>
+    <dimen name="font_size_85">25.5dp</dimen>
+    <dimen name="font_size_80">23dp</dimen>
+    <dimen name="font_size_75">22dp</dimen>
+    <dimen name="font_size_72">24dp</dimen>
+    <dimen name="font_size_70">20dp</dimen>
+    <dimen name="font_size_65">19.5dp</dimen>
+    <dimen name="font_size_62">20.67dp</dimen>
+    <dimen name="font_size_60">18dp</dimen>
+    <dimen name="font_size_55">16.5dp</dimen>
+    <dimen name="font_size_56">18.67dp</dimen>
+
+</resources>
