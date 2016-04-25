@@ -7,6 +7,8 @@ import android.os.Message;
 
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
 import com.haozi.idscaner2016.client.ui.home.HomeActivity;
+import com.haozi.idscaner2016.client.ui.home.HomeNewActivity;
+import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.routon.idr.idrinterface.readcard.ReadMode;
 import com.routon.idr.idrinterface.readcard.ReadState;
 import com.routon.idr.idrinterface.readcard.ReadType;
@@ -17,9 +19,9 @@ import com.routon.idrconst.iDRConst;
 public class ClientBCReceiver extends BroadcastReceiver {
 
 	private final String TAG="ClientBCReceiver";
-	private HomeActivity mReadCardActivity = null;
+	private BaseCompatActivity mReadCardActivity = null;
 	
-	public ClientBCReceiver(HomeActivity activity) {
+	public ClientBCReceiver(BaseCompatActivity activity) {
 		super();
 		// TODO Auto-generated constructor stub
 		mReadCardActivity = activity;

@@ -80,6 +80,10 @@ public abstract class BaseCompatActivity extends AppCompatActivity implements Ha
         }
     }
 
+    public Handler getMainHandler(){
+        return mMainHandler;
+    }
+
     /**
      * 处理UIMsg请求
      * */

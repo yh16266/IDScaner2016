@@ -1,29 +1,25 @@
-package com.haozi.idscaner2016.client.ui.home;
+package com.haozi.idscaner2016.client.biz.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
 import com.haozi.idscaner2016.client.biz.cardread.ClientBCReceiver;
 import com.haozi.idscaner2016.client.biz.cardread.MainMsg;
 import com.haozi.idscaner2016.client.biz.cardread.ReadCardServiceCallback;
 import com.haozi.idscaner2016.client.biz.cardread.ReadCardSound;
+import com.haozi.idscaner2016.client.biz.cardread.ReadInfoCallback;
 import com.haozi.idscaner2016.client.biz.cardread.ReadServiceConnection;
-import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
+import com.haozi.idscaner2016.common.base.BaseObject;
 import com.routon.idr.idrinterface.readcard.IReadCardService;
 import com.routon.idr.idrinterface.readcard.ReadMode;
 import com.routon.idr.idrinterface.readcard.ReadState;
@@ -31,13 +27,18 @@ import com.routon.idr.idrinterface.readcard.ReadType;
 import com.routon.idr.idrinterface.readcard.ReaderBean;
 import com.routon.idrconst.Action;
 
-public class HomeActivity extends BaseCompatActivity implements ReadCardServiceCallback {
+/**
+ * Created by Haozi on 2016/4/26.
+ */
+public class HomeCardReadHelper extends BaseObject implements ReadCardServiceCallback{
 
     private ReadState mClientState = ReadState.st_unknown;
-    private static final int ROLL_INTERVAL = 20;  //滚动执行间隔时间 20ms
+    //滚动执行间隔时间 20ms
+    private static final int ROLL_INTERVAL = 20;
     public IReadCardService mReadCardService;
     public ClientBCReceiver mReceiver;
-    private ReadCardSound soundPlayer;//读卡提示音
+    //读卡提示音
+    private ReadCardSound soundPlayer;
     private ReadServiceConnection conn_readcard;
     public boolean isServRDcardConned = false;
     public boolean roll_timer_running = false;
@@ -54,63 +55,39 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
     private Button mButtonStop;
     private Spinner mSpinnerMode;
     private Spinner mSpinnerType;
-    private ArrayAdapter spinnerModeAdapter;
-    private ArrayAdapter spinnerTypeAdapter;
-    private ImageView img_headicon;
+    private BaseCompatActivity context;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+    /**静态单例初始化*/
+    private static final HomeCardReadHelper INSTANCE = new HomeCardReadHelper();
+    /**单例静态引用*/
+    public static HomeCardReadHelper getInstance() {
+        return INSTANCE;
     }
 
-    @Override
-    protected void initView() {
-        initToolbar("首页");
-        txv_statu = (TextView) findViewById(R.id.txv_statu);
-        mButtonStart = (Button) findViewById(R.id.btn_start);
-        mButtonPause = (Button) findViewById(R.id.btn_pause);
-        mButtonStop = (Button) findViewById(R.id.btn_stop);
-        mButtonPause.setOnClickListener(this);
-        mButtonStart.setOnClickListener(this);
-        mButtonStop.setOnClickListener(this);
-        img_headicon = (ImageView) findViewById(R.id.img_headicon);
+    public void init(BaseCompatActivity context,TextView txv_statu, Button mButtonPause,
+                     Button mButtonStop, Button mButtonStart, Spinner mSpinnerMode,
+                     Spinner mSpinnerType){
 
-        mSpinnerMode=(Spinner)findViewById(R.id.spinnermode);
-        spinnerModeAdapter=ArrayAdapter.createFromResource(this, R.array.read_mode, android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerMode.setAdapter(spinnerModeAdapter);
-        mSpinnerMode.setOnItemSelectedListener(new MyOnItemSelectedListener());
+        this.context = context;
+        this.txv_statu = txv_statu;
+        this.mButtonPause = mButtonPause;
+        this.mButtonStop = mButtonStop;
+        this.mButtonStart = mButtonStart;
+        this.mSpinnerMode = mSpinnerMode;
+        this.mSpinnerType = mSpinnerType;
 
-        mSpinnerType=(Spinner)findViewById(R.id.spinnertype);
-        spinnerTypeAdapter= ArrayAdapter.createFromResource(this, R.array.read_type, android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerType.setAdapter(spinnerTypeAdapter);
-        mSpinnerType.setOnItemSelectedListener(new MyOnItemSelectedListener());
-
-        initCardRead();
-    }
-
-    private void initCardRead(){
-        registerHandler();
-        register();
-        soundPlayer = new ReadCardSound(this);
-        conn_readcard = new ReadServiceConnection(this,mMainHandler);
+        register(context);
+        soundPlayer = new ReadCardSound(context);
+        conn_readcard = new ReadServiceConnection(this,context.getMainHandler());
         //绑定读卡服务
-        bindReadCardService();
+        bindReadCardService(context);
         mTextStatus="正在初始化";
-        txv_statu.setText(mTextStatus);
-
         mBCardInfo = new BCardInfo();
 
         setClientState(ReadState.st_init);
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        startReading(v);
-    }
-
-    private void startReading(View view){
+    public void startReading(View view){
         Message send_msg = new Message();
         if(view==mButtonPause)
         {
@@ -135,100 +112,15 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         //}else if(arg0==mButtonReadVersion){
         //    send_msg.what = MainMsg.EVT_GET_VERSION;
         //}
-        if(mMainHandler!=null){
-            mMainHandler.sendMessage(send_msg);
+        if(context.getMainHandler()!=null){
+            context.getMainHandler().sendMessage(send_msg);
         }
     }
 
-    public void bindReadCardService(){
-        Intent intentReadCard = new Intent(IReadCardService.class.getName());
-        Log.d(TAG, "bindReadCardService " + IReadCardService.class.getName());
-        bindService(intentReadCard, conn_readcard, BIND_AUTO_CREATE);
-    }
-
-    public void unbindReadCardService(){
-        Log.d(TAG, "unbindReadCardService " + IReadCardService.class.getName());
-        if(mReadCardService != null){
-            unbindService(conn_readcard);
-        }
-        mReadCardService = null;
-    }
-
-//-------------------------------备份注释部分，恢复时取消注释---------------------------------------------------
-    private void register(){
-        mReceiver=new ClientBCReceiver(this);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Action.ACTION_READER_STATE_CHANGED);
-        filter.addAction(Action.ACTION_TYPEA_STATUS_CHANGED);
-        filter.addAction(Action.ACTION_TYPEB_STATUS_CHANGED);
-        filter.addAction(Action.ACTION_READER_PAUSED);
-        filter.addAction(Action.ACTION_READER_STOPPED);
-        filter.addAction(Action.ACTION_READER_STARTED);
-        filter.addAction(Action.ACTION_READER_READMODE_CHANGED);
-        filter.addAction(Action.ACTION_READER_READTYPE_CHANGED);
-        registerReceiver(mReceiver, filter);
-    }
-
-    private void unRegister(){
-        if(mReceiver!=null){
-            unregisterReceiver(mReceiver);
-            mReceiver = null;
-        }
-    }
-
-    private void setClientState(ReadState clientState){
-        if(mClientState!=clientState){
-            Log.d(TAG, mClientState + " to " + clientState);
-        }
-        mClientState=clientState;
-    }
-
-    private int startRollingTimer(int timeout, boolean enable){
-        //Log.d(TAG, "startHeartbeatTimer "+ enable);
-        if(mMainHandler!=null){
-            if(enable){
-                mMainHandler.removeMessages(MainMsg.EVT_TIMEOUT_ROLL);
-                mMainHandler.sendEmptyMessageDelayed(MainMsg.EVT_TIMEOUT_ROLL, timeout);
-            }else{
-                mMainHandler.removeMessages(MainMsg.EVT_TIMEOUT_ROLL);
-            }
-            roll_timer_running = enable;
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean handleMessage(Message msg) {
-        boolean isProcessed = procOnAny(msg);
-        if(!isProcessed){
-            switch(mClientState){
-                case st_init:
-                    procOnInit(msg);
-                    break;
-                case st_idle:
-                    procOnIdle(msg);
-                    break;
-                case st_work:
-                    procOnWork(msg);
-                    break;
-                case st_opened:
-                    procOnOpened(msg);
-                    break;
-                case st_fault:
-                    //lihuili 2016-01-14 st_fault是多余, 程序不会调用procOnFault
-                    procOnFault(msg);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return true;
-    }
-
-    private Boolean procOnAny(Message msg){
+    public Boolean procOnAny(Message msg){
         Boolean is_processed = false;
         switch(msg.what){
-            case MainMsg.EVT_UI_PAUSED:{
+            case MainMsg.EVT_UI_PAUSED:
                 if(mReadCardService!=null){
                     try {
                         //停止读卡
@@ -241,9 +133,8 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                     }
                     is_processed = true;
                 }
-            }
-            break;
-            case MainMsg.EVT_UI_RESUMED:{
+                break;
+            case MainMsg.EVT_UI_RESUMED:
                 if(mClientState.equals(ReadState.st_idle)){
                     mTextStatus="初始化成功";
                     txv_statu.setText(mTextStatus);
@@ -252,8 +143,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                     mButtonStart.setEnabled(true);
                     is_processed = true;
                 }
-            }
-            break;
+                break;
             case MainMsg.EVT_GET_VERSION:{
 //                if(mReadCardService!=null){
 //                    try {
@@ -276,13 +166,13 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                 mButtonPause.setEnabled(false);
                 mButtonStop.setEnabled(false);
                 mButtonStart.setEnabled(false);
-                bindReadCardService();
+                bindReadCardService(context);
                 mTextStatus="正在初始化";
                 txv_statu.setText(mTextStatus);
                 //跳转到st_init状态
                 setClientState(ReadState.st_init);
                 //启动轮询定时器
-                startRollingTimer(ROLL_INTERVAL, true);
+                startRollingTimer(context, ROLL_INTERVAL, true);
                 is_processed = true;
             }
             break;
@@ -304,11 +194,11 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         return is_processed;
     }
 
-    private int procOnInit(Message msg){
+    public int procOnInit(Message msg){
         switch(msg.what){
             case MainMsg.EVT_SERV_CONNECTED_RDCARD:{
                 //停止轮询定时器
-                startRollingTimer(ROLL_INTERVAL, false);
+                startRollingTimer(context,ROLL_INTERVAL, false);
                 //读卡服务连接成功后,等待用户的界面操作
                 if(mReadCardService!=null){
                     isServRDcardConned = true;
@@ -322,9 +212,9 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             }
             break;
             case MainMsg.EVT_TIMEOUT_ROLL: {
-                bindReadCardService();
+                bindReadCardService(context);
                 //启动轮询定时器
-                startRollingTimer(ROLL_INTERVAL, true);
+                startRollingTimer(context,ROLL_INTERVAL, true);
             }
             break;
             default:
@@ -333,7 +223,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         return 0;
     }
 
-    private int procOnIdle(Message msg){
+    public int procOnIdle(Message msg,ReadInfoCallback callback){
         switch(msg.what){
             case MainMsg.EVT_START:
             {
@@ -370,7 +260,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             &&(mRdrBean!=null)){
                         try {
                             mReadCardService.start(mRdrBean);
-                            startRollingTimer(ROLL_INTERVAL, true);
+                            startRollingTimer(context, ROLL_INTERVAL, true);
                         } catch (RemoteException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -378,7 +268,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                     }
                 }else{
                     mTextStatus="已停止读卡";
-                    updateTextStatus(mTextStatus);
+                    callback.updateTextStatus(mTextStatus);
                     mButtonPause.setEnabled(false);
                     mButtonStop.setEnabled(false);
                     mButtonStart.setEnabled(true);
@@ -399,13 +289,13 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 if(!m_lastServRdSt.equals(servRdSt)){
                                     mTextStatus="请放卡";
-                                    updateTextStatus(mTextStatus);
+                                    callback.updateTextStatus(mTextStatus);
                                     mButtonPause.setEnabled(true);
                                     mButtonStop.setEnabled(true);
                                     mButtonStart.setEnabled(false);
                                 }
                                 //重启启动查询状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
@@ -415,7 +305,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 //启动成功
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
@@ -425,10 +315,10 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 //启动失败
                                 mTextStatus="设备通信故障";
-                                updateTextStatus(mTextStatus);
+                                callback.updateTextStatus(mTextStatus);
 
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //留在st_idle状态
 
@@ -440,10 +330,10 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             case st_init:
                             {
                                 mTextStatus="服务正在初始化";
-                                updateTextStatus(mTextStatus);
+                                callback.updateTextStatus(mTextStatus);
 
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                             case st_idle:
@@ -451,7 +341,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             default:
                             {
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //留在st_idle状态
                             }
@@ -469,16 +359,16 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             {
                 //启动成功
                 //停定时器
-                startRollingTimer(ROLL_INTERVAL, false);
+                startRollingTimer(context, ROLL_INTERVAL, false);
 
                 mTextStatus="请放卡";
-                updateTextStatus(mTextStatus);
+                callback.updateTextStatus(mTextStatus);
                 mButtonPause.setEnabled(true);
                 mButtonStop.setEnabled(true);
                 mButtonStart.setEnabled(false);
 
                 //启动查状态定时器
-                startRollingTimer(ROLL_INTERVAL, true);
+                startRollingTimer(context, ROLL_INTERVAL, true);
 
                 //状态跳转到st_work
                 setClientState(ReadState.st_work);
@@ -506,7 +396,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         return 0;
     }
 
-    private int procOnWork(Message msg){
+    public int procOnWork(Message msg,ReadInfoCallback callback){
         switch(msg.what){
             case MainMsg.EVT_TIMEOUT_ROLL:
             {
@@ -522,13 +412,13 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 if(!m_lastServRdSt.equals(servRdSt)){
                                     mTextStatus="请放卡";
-                                    updateTextStatus(mTextStatus);
+                                    callback.updateTextStatus(mTextStatus);
                                     mButtonPause.setEnabled(true);
                                     mButtonStop.setEnabled(true);
                                     mButtonStart.setEnabled(false);
                                 }
                                 //重启启动查询状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                             case st_cardon_a:
@@ -536,30 +426,30 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 //启动成功
                                 //重启启动查询状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                             case st_idle:
                             case st_opened:
                             {
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                             case st_init:
                             {
                                 mTextStatus = "服务正在初始化";
-                                updateTextCardInfo(false,ReadType.B);
-                                updateTextStatus(mTextStatus);
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                callback.updateTextCardInfo(false,ReadType.B);
+                                callback.updateTextStatus(mTextStatus);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                             case st_fault:
                             {
                                 mTextStatus = "设备故障";
-                                updateTextCardInfo(false,ReadType.B);
-                                updateTextStatus(mTextStatus);
+                                callback.updateTextCardInfo(false,ReadType.B);
+                                callback.updateTextStatus(mTextStatus);
 
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //lihuili 2016-01-14 无需跳转到st_fault状态，仅需要提示
 //							 //状态跳转到st_fault
@@ -581,7 +471,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             case MainMsg.EVT_FOUND_A:
             {
                 mTextStatus="正在读TypeA卡...";
-                updateTextStatus(mTextStatus);
+                callback.updateTextStatus(mTextStatus);
             }
             break;
             case MainMsg.EVT_READ_CARD_A_SUCCESS:
@@ -594,34 +484,34 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                 mTextStatus="读TypeA卡成功";
                 byte data[]=(byte[])msg.obj;
                 cardANo=String.format("%02X%02X%02X%02X", data[0], data[1], data[2], data[3]);
-                updateTextStatus(mTextStatus);
-                updateTextCardInfo(true,ReadType.A);
+                callback.updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(true,ReadType.A);
             }
             break;
             case MainMsg.EVT_LEAVE_A:
             {
                 mTextStatus="TypeA卡已离开";
-                updateTextStatus(mTextStatus);
-                updateTextCardInfo(false,ReadType.A);
+                callback.updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(false,ReadType.A);
             }
             break;
             case MainMsg.EVT_READ_CARD_A_FAIL:
             {
                 mTextStatus="读TypeA卡失败";
-                updateTextStatus(mTextStatus);
-                updateTextCardInfo(false,ReadType.A);
+                callback.updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(false,ReadType.A);
             }
             break;
             case MainMsg.EVT_SELECT_B:
             {
                 mTextStatus="TypeB卡选卡成功...";
-                updateTextStatus(mTextStatus);
+                callback.updateTextStatus(mTextStatus);
             }
             break;
             case MainMsg.EVT_FOUND_B:
             {
                 mTextStatus="TypeB卡寻卡成功...";
-                updateTextStatus(mTextStatus);
+                callback.updateTextStatus(mTextStatus);
             }
             break;
             case MainMsg.EVT_READ_CARD_B_SUCCESS:
@@ -634,22 +524,22 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                 mTextStatus="读TypeB卡成功";
 
                 mBCardInfo=(BCardInfo)msg.obj;
-                updateTextStatus(mTextStatus);
-                updateTextCardInfo(true,ReadType.B);
+                callback.updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(true,ReadType.B);
             }
             break;
             case MainMsg.EVT_LEAVE_B:
             {
                 mTextStatus="TypeB卡已离开";
-                updateTextStatus(mTextStatus);
-                updateTextCardInfo(false,ReadType.B);
+                callback.updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(false,ReadType.B);
             }
             break;
             case MainMsg.EVT_READ_CARD_B_FAIL:
             {
                 mTextStatus="读TypeB卡失败";
-                updateTextStatus(mTextStatus);
-                updateTextCardInfo(false,ReadType.B);
+                callback.updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(false,ReadType.B);
             }
             break;
             case MainMsg.EVT_GET_SAMID:
@@ -702,8 +592,8 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             case MainMsg.EVT_PAUSED:
             {
                 mTextStatus = "已暂停读卡";
-                updateTextCardInfo(false,ReadType.B);
-                updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(false,ReadType.B);
+                callback.updateTextStatus(mTextStatus);
                 mButtonPause.setEnabled(false);
                 mButtonStop.setEnabled(true);
                 mButtonStart.setEnabled(true);
@@ -728,8 +618,8 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             case MainMsg.EVT_STOPPED:
             {
                 mTextStatus="已停止读卡";
-                updateTextCardInfo(false,ReadType.B);
-                updateTextStatus(mTextStatus);
+                callback.updateTextCardInfo(false,ReadType.B);
+                callback.updateTextStatus(mTextStatus);
                 mButtonPause.setEnabled(false);
                 mButtonStop.setEnabled(false);
                 mButtonStart.setEnabled(true);
@@ -744,7 +634,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         return 0;
     }
 
-    private int procOnOpened(Message msg){
+    public int procOnOpened(Message msg,ReadInfoCallback callback){
         switch(msg.what){
             case MainMsg.EVT_START:
             {
@@ -758,7 +648,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                     //先发送启动读卡请求,然后等待事件EVT_STARTED 或者 查状态定时器到事件EVT_TIMEOUT_ROLL
                     try {
                         mReadCardService.start(mRdrBean);
-                        startRollingTimer(ROLL_INTERVAL, true);
+                        startRollingTimer(context, ROLL_INTERVAL, true);
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -770,16 +660,16 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             {
                 //启动成功
                 //停定时器
-                startRollingTimer(ROLL_INTERVAL, false);
+                startRollingTimer(context, ROLL_INTERVAL, false);
 
                 mTextStatus="请放卡";
-                updateTextStatus(mTextStatus);
+                callback.updateTextStatus(mTextStatus);
                 mButtonPause.setEnabled(true);
                 mButtonStop.setEnabled(true);
                 mButtonStart.setEnabled(false);
 
                 //启动查状态定时器
-                startRollingTimer(ROLL_INTERVAL, true);
+                startRollingTimer(context, ROLL_INTERVAL, true);
 
                 //状态跳转到st_work
                 setClientState(ReadState.st_work);
@@ -799,13 +689,13 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 if(!m_lastServRdSt.equals(servRdSt)){
                                     mTextStatus="请放卡";
-                                    updateTextStatus(mTextStatus);
+                                    callback.updateTextStatus(mTextStatus);
                                     mButtonPause.setEnabled(true);
                                     mButtonStop.setEnabled(true);
                                     mButtonStart.setEnabled(false);
                                 }
                                 //重启启动查询状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
@@ -817,7 +707,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                                 //启动成功
 
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
@@ -825,7 +715,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             break;
                             case st_fault:
                             {
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //lihuili 2016-01-14 无需跳转到st_fault状态，仅需要提示
 //							 //状态跳转到st_fault
@@ -835,10 +725,10 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             case st_init:
                             {
                                 mTextStatus="服务正在初始化";
-                                updateTextStatus(mTextStatus);
+                                callback.updateTextStatus(mTextStatus);
 
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                             case st_idle:
@@ -897,7 +787,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
     }
 
     //lihuili 2016-01-14 st_fault是多余, 程序不会调用procOnFault
-    private int procOnFault(Message msg){
+    public int procOnFault(Message msg,ReadInfoCallback callback){
         switch(msg.what){
             case MainMsg.EVT_TIMEOUT_ROLL:
             {
@@ -912,13 +802,13 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             {
                                 if(!m_lastServRdSt.equals(servRdSt)){
                                     mTextStatus="请放卡";
-                                    updateTextStatus(mTextStatus);
+                                    callback.updateTextStatus(mTextStatus);
                                     mButtonPause.setEnabled(true);
                                     mButtonStop.setEnabled(true);
                                     mButtonStart.setEnabled(false);
                                 }
                                 //重启启动查询状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
 
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
@@ -929,7 +819,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                                 //状态恢复正常
 
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
                             }
@@ -937,10 +827,9 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             case st_fault:
                             {
                                 mTextStatus = "设备通信故障";
-                                updateTextCardInfo(false,ReadType.B);
-                                updateTextStatus(mTextStatus);
-
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                callback.updateTextCardInfo(false,ReadType.B);
+                                callback.updateTextStatus(mTextStatus);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
 
@@ -950,7 +839,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             default:
                             {
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                             }
                             break;
                         }
@@ -965,7 +854,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
             case MainMsg.EVT_STATE_CHANGE:
             {
                 //停定时器
-                startRollingTimer(ROLL_INTERVAL, false);
+                startRollingTimer(context, ROLL_INTERVAL, false);
 
                 //读卡服务状态改变
                 ReadState servRdSt = (ReadState)msg.obj;
@@ -977,13 +866,13 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                         {
                             if(!m_lastServRdSt.equals(servRdSt)){
                                 mTextStatus="请放卡";
-                                updateTextStatus(mTextStatus);
+                                callback.updateTextStatus(mTextStatus);
                                 mButtonPause.setEnabled(true);
                                 mButtonStop.setEnabled(true);
                                 mButtonStart.setEnabled(false);
 
                                 //启动查状态定时器
-                                startRollingTimer(ROLL_INTERVAL, true);
+                                startRollingTimer(context, ROLL_INTERVAL, true);
                                 //状态跳转到st_work
                                 setClientState(ReadState.st_work);
                             }
@@ -995,7 +884,7 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                             //状态恢复正常
 
                             //启动查状态定时器
-                            startRollingTimer(ROLL_INTERVAL, true);
+                            startRollingTimer(context, ROLL_INTERVAL, true);
                             //状态跳转到st_work
                             setClientState(ReadState.st_work);
                         }
@@ -1003,11 +892,10 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
                         case st_fault:
                         {
                             mTextStatus = "设备通信故障";
-                            updateTextCardInfo(false,ReadType.B);
-                            updateTextStatus(mTextStatus);
-
+                            callback.updateTextCardInfo(false,ReadType.B);
+                            callback.updateTextStatus(mTextStatus);
                             //启动查状态定时器
-                            startRollingTimer(ROLL_INTERVAL, true);
+                            startRollingTimer(context, ROLL_INTERVAL, true);
                         }
                         break;
                         case st_idle:
@@ -1029,6 +917,70 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         return 0;
     }
 
+    public void bindReadCardService(Activity context){
+        Intent intentReadCard = new Intent(IReadCardService.class.getName());
+        Log.d(TAG, "bindReadCardService " + IReadCardService.class.getName());
+        context.bindService(intentReadCard, conn_readcard, context.BIND_AUTO_CREATE);
+    }
+
+    public void unbindReadCardService(Activity context){
+        Log.d(TAG, "unbindReadCardService " + IReadCardService.class.getName());
+        if(mReadCardService != null){
+            context.unbindService(conn_readcard);
+        }
+        mReadCardService = null;
+    }
+
+    public void register(BaseCompatActivity context){
+        mReceiver=new ClientBCReceiver(context);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Action.ACTION_READER_STATE_CHANGED);
+        filter.addAction(Action.ACTION_TYPEA_STATUS_CHANGED);
+        filter.addAction(Action.ACTION_TYPEB_STATUS_CHANGED);
+        filter.addAction(Action.ACTION_READER_PAUSED);
+        filter.addAction(Action.ACTION_READER_STOPPED);
+        filter.addAction(Action.ACTION_READER_STARTED);
+        filter.addAction(Action.ACTION_READER_READMODE_CHANGED);
+        filter.addAction(Action.ACTION_READER_READTYPE_CHANGED);
+        context.registerReceiver(mReceiver, filter);
+    }
+
+    public void unRegister(BaseCompatActivity context){
+        if(mReceiver!=null){
+            context.unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
+    }
+
+    public ReadState getClientState(){
+        return mClientState;
+    }
+
+    private void setClientState(ReadState clientState){
+        if(mClientState!=clientState){
+            Log.d(TAG, mClientState + " to " + clientState);
+        }
+        mClientState=clientState;
+    }
+
+    private int startRollingTimer(BaseCompatActivity activity,int timeout, boolean enable){
+        //Log.d(TAG, "startHeartbeatTimer "+ enable);
+        if(activity.getMainHandler()!=null){
+            if(enable){
+                activity.getMainHandler().removeMessages(MainMsg.EVT_TIMEOUT_ROLL);
+                activity.getMainHandler().sendEmptyMessageDelayed(MainMsg.EVT_TIMEOUT_ROLL, timeout);
+            }else{
+                activity.getMainHandler().removeMessages(MainMsg.EVT_TIMEOUT_ROLL);
+            }
+            roll_timer_running = enable;
+        }
+        return 0;
+    }
+
+    public String getTextStatus(){
+        return mTextStatus;
+    }
+
     @Override
     public void setReadCardService(IReadCardService service) {
         this.mReadCardService = service;
@@ -1039,94 +991,11 @@ public class HomeActivity extends BaseCompatActivity implements ReadCardServiceC
         return mReadCardService;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unRegister();
-        if(mReadCardService != null){
-            unbindReadCardService();
-        }
-        Log.d(TAG,"onDestroy");
+    public String getCardANo() {
+        return cardANo;
     }
 
-    @Override
-    protected void onPause() {
-        Log.d(TAG,"onPause");
-        super.onPause();
-        Message send_msg = new Message();
-        send_msg.what = MainMsg.EVT_UI_PAUSED;
-        if(mMainHandler!=null){
-            mMainHandler.sendMessage(send_msg);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG,"onResume");
-        Message send_msg = new Message();
-        send_msg.what = MainMsg.EVT_UI_RESUMED;
-        if(mMainHandler!=null){
-            mMainHandler.sendMessage(send_msg);
-        }
-    }
-
-    public void updateTextCardInfo(boolean flag,ReadType rdType){
-        if(flag){
-            if(rdType==ReadType.B){
-                ViewUtils.setTextViewTxt(this,R.id.tv_name,mBCardInfo.name);
-                ViewUtils.setTextViewTxt(this,R.id.tv_sex,mBCardInfo.gender);
-                ViewUtils.setTextViewTxt(this,R.id.tv_nation,mBCardInfo.nation);
-                String birthday = mBCardInfo.birthday.substring(0, 4)+"年"
-                        +mBCardInfo.birthday.substring(4, 6)+"月"
-                        +mBCardInfo.birthday.substring(6, 8)+"日";
-                ViewUtils.setTextViewTxt(this,R.id.tv_birthday,birthday);
-                ViewUtils.setTextViewTxt(this,R.id.tv_address,mBCardInfo.address);
-                ViewUtils.setTextViewTxt(this,R.id.tv_idnumber,mBCardInfo.id);
-                //mTextViewAgency.setText(mBCardInfo.agency);//发证机关
-                //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
-                img_headicon.setImageBitmap(mBCardInfo.photo);
-            }else{
-                ViewUtils.setTextViewTxt(this,R.id.tv_name,"");
-                ViewUtils.setTextViewTxt(this,R.id.tv_sex,"");
-                ViewUtils.setTextViewTxt(this,R.id.tv_nation,"");
-                ViewUtils.setTextViewTxt(this,R.id.tv_birthday,"");
-                ViewUtils.setTextViewTxt(this,R.id.tv_address,"");
-                ViewUtils.setTextViewTxt(this,R.id.tv_idnumber,cardANo);
-                //mTextViewAgency.setText(mBCardInfo.agency);//发证机关
-                //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
-                img_headicon.setImageResource(R.mipmap.icon_default_male);
-            }
-        }else{
-            ViewUtils.setTextViewTxt(this,R.id.tv_name,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_sex,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_nation,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_birthday,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_address,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_idnumber,"");
-            //mTextViewAgency.setText(mBCardInfo.agency);//发证机关
-            //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
-            img_headicon.setImageResource(R.mipmap.icon_default_male);
-        }
-    }
-
-    public void updateTextStatus(String statusStr){
-        txv_statu.setText(statusStr);
-    }
-
-    private class MyOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if(adapterView==mSpinnerMode){
-                Log.d(TAG,"mSpinnerMode");
-            }else if(adapterView==mSpinnerType){
-                Log.d(TAG,"mSpinnerType");
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-            Log.d(TAG,"onNothingSelected");
-        }
+    public BCardInfo getBCardInfo() {
+        return mBCardInfo;
     }
 }
