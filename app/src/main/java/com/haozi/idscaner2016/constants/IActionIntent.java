@@ -28,27 +28,6 @@ public class IActionIntent {
 
 	/*-------------------------------------------------参数常量-------------------------------------------------------*/
 	
-	/** 电话号码 */
-	public static final String INTENTEXTRA_MOBILE = "INTENTEXTRA_MOBILE";
-	/** 短信验证码*/
-	public static final String INTENTEXTRA_MSGCODE = "INTENTEXTRA_MSGCODE";
-	
-	/** 分析师ID*/
-	public static final String INTENTEXTRA_ANALYSIS_ID = "INTENTEXTRA_ANALYSIS_ID";
-	/** 分析师名字*/
-	public static final String INTENTEXTRA_ANALYSIS_NAME = "INTENTEXTRA_ANALYSIS_NAME";
-	/** 分析师帖子ID*/
-	public static final String INTENTEXTRA_ANALYSIS_ARTICALID = "INTENTEXTRA_ANALYSIS_ARTICALID";
-	/** 新闻ID*/
-	public static final String INTENTEXTRA_NEWS_ID = "INTENTEXTRA_NEWS_ID";
-	/** 帖子ID*/
-	public static final String INTENTEXTRA_ARTICALID = "INTENTEXTRA_ARTICALID";
-
-	/** 帖子标题*/
-	public static final String INTENTEXTRA_TOPIC_TITLE = "INTENTEXTRA_TOPIC_TITLE";
-	/** 帖子内容*/
-	public static final String INTENTEXTRA_TOPIC_CONTENT = "INTENTEXTRA_TOPIC_CONTENT";
-	
-	/** 用户名字*/
-	public static final String INTENTEXTRA_USER_NAME = "INTENTEXTRA_USER_NAME";
+	/** 身份证号码 */
+	public static final String INTENTEXTRA_IDNUM = "INTENTEXTRA_IDNUM";
 }

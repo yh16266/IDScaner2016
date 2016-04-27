@@ -254,9 +254,9 @@ public class FileUtil extends BaseObject {
 		//如果SD卡可用，或者外部存储卡可被拆卸，则使用系统缓存目录
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
 			//存储于android标准的缓存目录下（可以通过android程序管理中的清除缓存来清理掉）
-			cachePath = MyApp.getInstance().getExternalCacheDir().getPath();
+			//cachePath = MyApp.getInstance().getExternalCacheDir().getPath();
 			//存储于SD卡中程序包名下(此路径依然为手机内存卡0的路劲)
-			//largeFileCache = Environment.getExternalStorageDirectory().getPath()+File.separator+MyApp.getInstance().getPackageName();
+			cachePath = Environment.getExternalStorageDirectory().getPath()+File.separator+MyApp.getInstance().getPackageName();
 		} else {
 			cachePath = MyApp.getInstance().getCacheDir().getPath();
 		}

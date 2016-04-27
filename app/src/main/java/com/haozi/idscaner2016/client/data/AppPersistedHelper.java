@@ -27,8 +27,11 @@ public class AppPersistedHelper extends BasePersistedHelper {
 		public static final String NICK_NAME = "NICK_NAME";
 		/** 头像路径 */
 		public static final String PHOTOURL = "PHOTOURL";
-		/** 头像路径 */
+		/** 用户类型 */
 		public static final String USER_TYPE = "USER_TYPE";
+
+		/** 上次登录账号 */
+		public static final String LAST_USERACCOUNT = "LAST_USERACCOUNT";
 
 	}
 	

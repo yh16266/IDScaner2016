@@ -7,10 +7,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,8 +26,12 @@ import com.haozi.idscaner2016.client.biz.cardread.ReadCardSound;
 import com.haozi.idscaner2016.client.biz.cardread.ReadInfoCallback;
 import com.haozi.idscaner2016.client.biz.cardread.ReadServiceConnection;
 import com.haozi.idscaner2016.client.biz.home.HomeCardReadHelper;
+import com.haozi.idscaner2016.client.control.DXSignPop;
+import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
+import com.haozi.idscaner2016.common.utils.DateUtil;
+import com.haozi.idscaner2016.constants.IActionIntent;
 import com.routon.idr.idrinterface.readcard.IReadCardService;
 import com.routon.idr.idrinterface.readcard.ReadMode;
 import com.routon.idr.idrinterface.readcard.ReadState;
@@ -36,14 +42,19 @@ import com.routon.idrconst.Action;
 public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallback {
 
     private TextView txv_statu;
+    private TextView txv_sign;
+    private ImageView img_sign;
     private Button mButtonStart;
     private Button mButtonPause;
     private Button mButtonStop;
     private Spinner mSpinnerMode;
     private Spinner mSpinnerType;
+    private Spinner spinner_reson;
     private ArrayAdapter spinnerModeAdapter;
     private ArrayAdapter spinnerTypeAdapter;
+    private ArrayAdapter spinnerResonAdapter;
     private ImageView img_headicon;
+    private EditText editText_reson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +66,14 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     protected void initView() {
         initToolbar("首页New");
         txv_statu = (TextView) findViewById(R.id.txv_statu);
+        txv_sign = (TextView) findViewById(R.id.txv_sign);
+        txv_sign.setOnClickListener(this);
+        img_sign = (ImageView) findViewById(R.id.img_sign);
         mButtonStart = (Button) findViewById(R.id.btn_start);
         mButtonPause = (Button) findViewById(R.id.btn_pause);
         mButtonStop = (Button) findViewById(R.id.btn_stop);
+        editText_reson = (EditText) findViewById(R.id.editText_reson);
+
         mButtonPause.setOnClickListener(this);
         mButtonStart.setOnClickListener(this);
         mButtonStop.setOnClickListener(this);
@@ -72,6 +88,11 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         spinnerTypeAdapter= ArrayAdapter.createFromResource(this, R.array.read_type, android.R.layout.simple_spinner_dropdown_item);
         mSpinnerType.setAdapter(spinnerTypeAdapter);
         mSpinnerType.setOnItemSelectedListener(new MyOnItemSelectedListener());
+
+        spinner_reson=(Spinner)findViewById(R.id.spinner_reson);
+        spinnerResonAdapter= ArrayAdapter.createFromResource(this, R.array.visite_reson, android.R.layout.simple_spinner_dropdown_item);
+        spinner_reson.setAdapter(spinnerResonAdapter);
+        spinner_reson.setOnItemSelectedListener(new MyOnItemSelectedListener());
 
         initCardRead();
     }
@@ -89,7 +110,24 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        HomeCardReadHelper.getInstance().startReading(v);
+        switch (v.getId()){
+            case R.id.txv_sign:
+//                BCardInfo mBCardInfo = HomeCardReadHelper.getInstance().getBCardInfo();
+//                if(mBCardInfo == null){
+//                    DXToast.show("请先扫描身份证，然后再签字登记！");
+//                    return;
+//                }
+//                DXSignPop signPop = new DXSignPop(this);
+//                signPop.showPop(v,mBCardInfo.name);
+                Intent intent = new Intent(HomeNewActivity.this,SignActivity.class);
+                intent.putExtra(IActionIntent.INTENTEXTRA_IDNUM,"510622");
+                startActivity(intent);
+                break;
+            default:
+                HomeCardReadHelper.getInstance().startReading(v);
+                break;
+        }
+
     }
 
     @Override
@@ -178,17 +216,36 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
                 img_headicon.setImageResource(R.mipmap.icon_default_male);
             }
+            //刷新来访时间
+            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(System.currentTimeMillis()));
         }else{
-            ViewUtils.setTextViewTxt(this,R.id.tv_name,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_sex,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_nation,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_birthday,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_address,"");
-            ViewUtils.setTextViewTxt(this,R.id.tv_idnumber,"");
-            //mTextViewAgency.setText(mBCardInfo.agency);//发证机关
-            //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
-            img_headicon.setImageResource(R.mipmap.icon_default_male);
+            //cleanIDInfo();
         }
+    }
+
+    /**
+     * 清空刷卡结果
+     * */
+    private void cleanIDInfo(){
+        ViewUtils.setTextViewTxt(this,R.id.tv_name,"");
+        ViewUtils.setTextViewTxt(this,R.id.tv_sex,"");
+        ViewUtils.setTextViewTxt(this,R.id.tv_nation,"");
+        ViewUtils.setTextViewTxt(this,R.id.tv_birthday,"");
+        ViewUtils.setTextViewTxt(this,R.id.tv_address,"");
+        ViewUtils.setTextViewTxt(this,R.id.tv_idnumber,"");
+        //mTextViewAgency.setText(mBCardInfo.agency);//发证机关
+        //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
+        img_headicon.setImageResource(R.mipmap.icon_default_male);
+    }
+
+    private void cleanVisitInfo(){
+        ViewUtils.setTextViewTxt(this,R.id.txv_time, "");
+        ViewUtils.setEditTextTxt(this,R.id.edt_unit, "");
+        ViewUtils.setEditTextTxt(this,R.id.edt_contractway, "");
+        ViewUtils.setEditTextTxt(this,R.id.edt_carnum, "");
+        ViewUtils.setEditTextTxt(this,R.id.edt_visiteto, "");
+        spinner_reson.setSelection(0);
+        ViewUtils.setEditTextTxt(this,R.id.editText_reson, "");
     }
 
     public void updateTextStatus(String statusStr){
@@ -202,9 +259,23 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 Log.d(TAG,"mSpinnerMode");
             }else if(adapterView==mSpinnerType){
                 Log.d(TAG,"mSpinnerType");
+            }else if(adapterView==spinner_reson){
+                Log.d(TAG,"spinner_reson");
+                TextView tv = (TextView)view;
+                //设置颜色
+                tv.setTextColor(getResources().getColor(R.color.white));
+                //设置大小
+                tv.setTextSize(18.0f);
+                //设置居中
+                tv.setGravity(Gravity.CENTER_VERTICAL);
+                //其他
+                if(i == 4){
+                    editText_reson.setVisibility(View.VISIBLE);
+                }else{
+                    editText_reson.setVisibility(View.INVISIBLE);
+                }
             }
         }
-
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
             Log.d(TAG,"onNothingSelected");

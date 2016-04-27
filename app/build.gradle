@@ -29,4 +29,5 @@ dependencies {
     compile files('libs/idrconst.jar')
     compile files('libs/idrinterface.jar')
     compile files('libs/idrversion.jar')
+    compile files('libs/iDR410SDK.jar')
 }

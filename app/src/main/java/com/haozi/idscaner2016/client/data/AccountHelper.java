@@ -143,8 +143,23 @@ public class AccountHelper extends BasePersistedHelper{
 		AccountHelper.getInstance().cleanMyInfo();
 	}
 
+	/**
+	 * 登录失败处理
+	 * */
+	public static void setLastAccount(String account){
+		getInstance().putValueToMyinfo(KEYS.LAST_USERACCOUNT, account);
+	}
+
+	/**
+	 * 登录失败处理
+	 * */
+	public static String getLastAccount(){
+		return getInstance().getString(KEYS.LAST_USERACCOUNT);
+	}
+
 	public void cleanMyInfo(){
 		putMyInfo(new Accounts());
 	}
-	
+
+
 }

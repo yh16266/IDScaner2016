@@ -45,6 +45,10 @@ public class WellcomeActivity extends BaseCompatActivity {
 
 	protected void initView(){
 		findViewById(R.id.btn_login).setOnClickListener(this);
+		String lastAccount = AccountHelper.getLastAccount();
+		if(!StringUtil.isEmpty(lastAccount)){
+			ViewUtils.setEditTextTxt(this,R.id.edt_username,lastAccount);
+		}
 	}
 
 	@Override
@@ -69,6 +73,7 @@ public class WellcomeActivity extends BaseCompatActivity {
 			DXToast.show("请输入密码");
 			return;
 		}
+		AccountHelper.setLastAccount(username);
 		Accounts rst = UserTable.getInstance().login(username,password);
 		if(rst == null){
 			DXToast.show("账号或者密码错误，登陆失败");

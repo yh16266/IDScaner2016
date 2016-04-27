@@ -47,6 +47,11 @@
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
+        <activity
+            android:name=".client.ui.home.SignActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+
     </application>
 
 </manifest>

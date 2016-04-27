@@ -11,4 +11,13 @@
         <item>自动读卡</item> 
         <item>联机读卡</item> 
     </string-array>
+
+    <string-array name="visite_reson">
+        <item>面试</item>
+        <item>商务</item>
+        <item>参观考察</item>
+        <item>施工</item>
+        <item>其它</item>
+    </string-array>
+
 </resources>
