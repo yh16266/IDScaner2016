@@ -40,6 +40,7 @@ public abstract class BaseCompatActivity extends AppCompatActivity implements Ha
     private ProgressDialog progressDialog;
 
     protected Toolbar mToolbar;
+    protected boolean mIsToolbarInit = false;
 
     /**
      * 广播接收处理
@@ -112,19 +113,34 @@ public abstract class BaseCompatActivity extends AppCompatActivity implements Ha
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         initView();
-        initToolbar(null);
+        initToolbar(null,-1,null);
     }
 
     protected void initToolbar(String title){
+        initToolbar(title,-1,null);
+    }
+
+    protected void initToolbar(String title,Toolbar.OnMenuItemClickListener listener){
+        initToolbar(title,-1,listener);
+    }
+
+    protected void initToolbar(String title,int menueRes,Toolbar.OnMenuItemClickListener listener){
         if(mToolbar == null){
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
         }
         if(!StringUtil.isEmpty(title)){
             setTitle(title);
         }
-        if(mToolbar != null){
+        if(listener != null){
+            mToolbar.setOnMenuItemClickListener(listener);
+        }
+        if(menueRes > 0){
+            mToolbar.inflateMenu(menueRes);
+        }
+        if(mToolbar != null && mIsToolbarInit == false){
             // 标题的文字需在setSupportActionBar之前，不然会无效
             setSupportActionBar(mToolbar);
+            mIsToolbarInit = true;
         }
     }
 

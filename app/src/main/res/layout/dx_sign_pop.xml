@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="800dp"
+    android:layout_height="500dp"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <com.haozi.idscaner2016.client.control.SignatureView
+        android:id="@+id/signatureView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/roundcorner_greylight_whitebg_shape_xml"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dip"
+        android:orientation="vertical"
+        android:gravity="bottom">
+
+        <Button
+	        android:id="@+id/buttonClean_signature"
+            android:layout_width="120dip"
+            android:layout_height="42dip"
+            android:layout_marginTop="150dip"
+            android:background="@drawable/btn_blue_bg"
+            android:drawablePadding="25dip"
+            android:text="清除"
+            android:textSize="22sp"
+            android:textColor="#ffffff" />
+        
+        <Button
+	        android:id="@+id/buttonSave_signature"
+            android:layout_width="120dip"
+            android:layout_height="42dip"
+            android:layout_marginTop="20dip"
+            android:background="@drawable/btn_blue_bg"
+            android:drawablePadding="25dip"
+            android:text="保存"
+            android:textSize="22sp"
+            android:textColor="#ffffff" />
+        
+         <Button
+	        android:id="@+id/buttonCancel_signature"
+            android:layout_width="120dip"
+            android:layout_height="42dip"
+            android:layout_marginTop="20dip"
+            android:background="@drawable/btn_blue_bg"
+            android:drawablePadding="25dip"
+            android:text="退出"
+            android:textColor="#ffffff"
+            android:textSize="22sp"/>
+        
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.haozi.idscaner2016.client.ui.home.HomeNewActivity">
+
+    <item
+        android:id="@+id/menu_search"
+        android:orderInCategory="80"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="查询"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_sum"
+        android:orderInCategory="80"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="统计"
+        app:showAsAction="ifRoom"/>
+
+</menu>

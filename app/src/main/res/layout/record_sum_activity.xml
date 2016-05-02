@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".client.ui.home.HomeNewActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/horizontalScrollView" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_size_55"
+                        android:text="来访日期："/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:hint="请选择来访日期"
+                        tools:text="2016-01-02"
+                        android:textSize="@dimen/font_size_55"
+                        android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+                        android:id="@+id/edt_visittime" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="@dimen/font_size_55"
+                    android:text="身份证号："/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="220dp"
+                    android:padding="8dp"
+                    android:hint="请输入身份证号码"
+                    android:textSize="@dimen/font_size_55"
+                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+                    android:id="@+id/edt_idnum" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_size_55"
+                    android:layout_marginLeft="10dp"
+                    android:text="来访者："/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:padding="8dp"
+                    android:hint="来访者姓名"
+                    android:textSize="@dimen/font_size_55"
+                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+                    android:id="@+id/edt_visitorname" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_size_55"
+                    android:layout_marginLeft="10dp"
+                    android:text="被访人："/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:padding="8dp"
+                    android:hint="被访者姓名"
+                    android:textSize="@dimen/font_size_55"
+                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+                    android:id="@+id/edt_bevisited" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_size_55"
+                    android:layout_marginLeft="10dp"
+                    android:text="车牌号："/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:padding="8dp"
+                    android:hint="来访车牌号"
+                    android:textSize="@dimen/font_size_55"
+                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+                    android:id="@+id/edt_carnum" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="搜索"
+                    android:id="@+id/btn_search" />
+
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/grey_light"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listView" />
+
+    </LinearLayout>
+
+</LinearLayout>

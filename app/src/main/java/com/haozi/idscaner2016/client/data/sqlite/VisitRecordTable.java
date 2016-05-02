@@ -65,6 +65,9 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		/** 来访签字 */
 		public static final String VISIT_SIGN = "VISIT_SIGN";
 
+		/** 条形码 */
+		public static final String VISIT_CHECKCODE = "VISIT_CHECKCODE";
+
 		/** 离开时间 */
 		public static final String VISIT_LEAVETIME = "VISIT_LEAVETIME";
 		/** 离开签字 */
@@ -91,6 +94,7 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		sql.append(Table.VISIT_BEVISITED).append(" TEXT, ");
 		sql.append(Table.VISIT_RESON).append(" TEXT, ");
 		sql.append(Table.VISIT_SIGN).append(" TEXT, ");
+		sql.append(Table.VISIT_CHECKCODE).append(" TEXT, ");
 		sql.append(Table.VISIT_LEAVETIME).append(" TEXT, ");
 		sql.append(Table.VISIT_LEAVESIGN).append(" TEXT ");
 		return SqliteUtils.getInstance().getCreateSql(getTableName(), sql.toString());
@@ -121,6 +125,7 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		cv.put(Table.VISIT_BEVISITED,tableEntity.getBeVisited());
 		cv.put(Table.VISIT_RESON,tableEntity.getVisitReson());
 		cv.put(Table.VISIT_SIGN,tableEntity.getVisitSign());
+		cv.put(Table.VISIT_CHECKCODE,tableEntity.getCheckCode());
 		cv.put(Table.VISIT_LEAVETIME,tableEntity.getLeaveTime());
 		cv.put(Table.VISIT_LEAVESIGN,tableEntity.getLeaveSign());
 		return cv;
@@ -147,14 +152,15 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		tableEntity.setAddress(SqliteUtils.getInstance().getStringColumn(csr, Table.IDCARD_ADDRESS));
 		tableEntity.setIdNum(SqliteUtils.getInstance().getStringColumn(csr, Table.IDCARD_IDNUM));
 		tableEntity.setPhoto(SqliteUtils.getInstance().getStringColumn(csr, Table.IDCARD_PHOTO));
-		tableEntity.setVisitTime(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_TIME));
+		tableEntity.setVisitTime(SqliteUtils.getInstance().getLongColumn(csr, Table.VISIT_TIME));
 		tableEntity.setVisitUnit(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_UNIT));
 		tableEntity.setVisitContract(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_CONTRACT));
 		tableEntity.setVisitCarnum(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_CARNUM));
 		tableEntity.setBeVisited(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_BEVISITED));
 		tableEntity.setVisitReson(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_RESON));
 		tableEntity.setVisitSign(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_SIGN));
-		tableEntity.setLeaveTime(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_LEAVETIME));
+		tableEntity.setCheckCode(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_CHECKCODE));
+		tableEntity.setLeaveTime(SqliteUtils.getInstance().getLongColumn(csr, Table.VISIT_LEAVETIME));
 		tableEntity.setLeaveSign(SqliteUtils.getInstance().getStringColumn(csr, Table.VISIT_LEAVESIGN));
 
 		return tableEntity;
@@ -177,6 +183,54 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
     }
 
 	/**
+	 * 更新记录
+	 * @param msg
+	 */
+	public void updateRecordById(VisitRecordEntity msg) {
+		if(msg == null){
+			return;
+		}
+		ContentValues cv = putContentValues(msg);
+		if(msg.getId() > 0){
+			SqliteUtils.getInstance().update(cv, getTableName(), Table.ID + "=" + msg.getId());
+		}else{
+			return;
+		}
+	}
+
+	/**
+	 * 更新记录
+	 * @param msg
+	 */
+	public void updateRecordByIDNum(VisitRecordEntity msg) {
+		if(msg == null){
+			return;
+		}
+		ContentValues cv = putContentValues(msg);
+		if(msg.getId() > 0){
+			SqliteUtils.getInstance().update(cv, getTableName(), Table.IDCARD_IDNUM + "='" + msg.getIdNum()+"'");
+		}else{
+			return;
+		}
+	}
+
+	/**
+	 * 更新记录
+	 * @param msg
+	 */
+	public void updateRecordByCheckCode(VisitRecordEntity msg) {
+		if(msg == null){
+			return;
+		}
+		ContentValues cv = putContentValues(msg);
+		if(msg.getId() > 0){
+			SqliteUtils.getInstance().update(cv, getTableName(), Table.IDCARD_IDNUM + "='" + msg.getIdNum()+"'");
+		}else{
+			return;
+		}
+	}
+
+	/**
      * 删除记录
      * @param recordId
      */
@@ -186,11 +240,11 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
     
     /**
      * 查询记录
-     * @param account
+     * @param idNum
      */
-    public VisitRecordEntity getRecord(String account) {
+    public VisitRecordEntity getRecord(String idNum) {
 		VisitRecordEntity entity = null;
-		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(),"");
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(),Table.IDCARD_IDNUM + "='" + idNum +"'");
 		if(csr != null) {
 			if(csr.moveToFirst()) {
 				entity = refreshTableEntity(csr);

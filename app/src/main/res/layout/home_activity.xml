@@ -209,7 +209,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
-                    android:background="@color/grey_light"
+                    android:background="@color/white"
                     android:id="@+id/img_sign" />
 
                 <TextView
@@ -290,6 +290,15 @@
                         android:layout_weight="1"
                         android:text="访客离开"
                         android:id="@+id/btn_leve" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="18sp"
+                        android:layout_weight="1"
+                        android:text="清除"
+                        android:id="@+id/btn_clean" />
                 </LinearLayout>
 
             </LinearLayout>

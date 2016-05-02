@@ -2,23 +2,29 @@ package com.haozi.idscaner2016.client.ui.home;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
+import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.cardread.ClientBCReceiver;
 import com.haozi.idscaner2016.client.biz.cardread.MainMsg;
 import com.haozi.idscaner2016.client.biz.cardread.ReadCardServiceCallback;
@@ -26,6 +32,7 @@ import com.haozi.idscaner2016.client.biz.cardread.ReadCardSound;
 import com.haozi.idscaner2016.client.biz.cardread.ReadInfoCallback;
 import com.haozi.idscaner2016.client.biz.cardread.ReadServiceConnection;
 import com.haozi.idscaner2016.client.biz.home.HomeCardReadHelper;
+import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXSignPop;
 import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
@@ -38,6 +45,8 @@ import com.routon.idr.idrinterface.readcard.ReadState;
 import com.routon.idr.idrinterface.readcard.ReadType;
 import com.routon.idr.idrinterface.readcard.ReaderBean;
 import com.routon.idrconst.Action;
+
+import java.io.File;
 
 public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallback {
 
@@ -55,6 +64,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     private ArrayAdapter spinnerResonAdapter;
     private ImageView img_headicon;
     private EditText editText_reson;
+    private RadioGroup radioGroup_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +75,11 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     @Override
     protected void initView() {
         initToolbar("首页New");
+        radioGroup_type = (RadioGroup) findViewById(R.id.radioGroup_type);
+        findViewById(R.id.btn_clean).setOnClickListener(this);
+        findViewById(R.id.btn_print).setOnClickListener(this);
+        findViewById(R.id.btn_leve).setOnClickListener(this);
+
         txv_statu = (TextView) findViewById(R.id.txv_statu);
         txv_sign = (TextView) findViewById(R.id.txv_sign);
         txv_sign.setOnClickListener(this);
@@ -95,6 +110,32 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         spinner_reson.setOnItemSelectedListener(new MyOnItemSelectedListener());
 
         initCardRead();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_title_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                DXToast.show("搜索");
+                Intent intent = new Intent(this,RecordSearchActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_sum:
+                DXToast.show("统计");
+                intent = new Intent(this,RecordSumActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     private void initCardRead(){
@@ -112,16 +153,16 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         super.onClick(v);
         switch (v.getId()){
             case R.id.txv_sign:
-//                BCardInfo mBCardInfo = HomeCardReadHelper.getInstance().getBCardInfo();
-//                if(mBCardInfo == null){
-//                    DXToast.show("请先扫描身份证，然后再签字登记！");
-//                    return;
-//                }
-//                DXSignPop signPop = new DXSignPop(this);
-//                signPop.showPop(v,mBCardInfo.name);
-                Intent intent = new Intent(HomeNewActivity.this,SignActivity.class);
-                intent.putExtra(IActionIntent.INTENTEXTRA_IDNUM,"510622");
-                startActivity(intent);
+                showSignView(v);
+                break;
+            case R.id.btn_clean:
+                cleanIDInfo();
+                cleanVisitInfo(true);
+                break;
+            case R.id.btn_leve:
+                break;
+            case R.id.btn_print:
+                printAndSaveVisitInfo();
                 break;
             default:
                 HomeCardReadHelper.getInstance().startReading(v);
@@ -217,7 +258,13 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 img_headicon.setImageResource(R.mipmap.icon_default_male);
             }
             //刷新来访时间
-            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(System.currentTimeMillis()));
+            long visitTime = System.currentTimeMillis();
+            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(visitTime));
+            ViewUtils.setViewTag(this,R.id.txv_time, visitTime);
+            //如果是团队访问，则不会清理来访信息
+            if(radioGroup_type.getCheckedRadioButtonId() == R.id.radio_person){
+                cleanVisitInfo(false);
+            }
         }else{
             //cleanIDInfo();
         }
@@ -238,7 +285,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         img_headicon.setImageResource(R.mipmap.icon_default_male);
     }
 
-    private void cleanVisitInfo(){
+    private void cleanVisitInfo(boolean isCleanSignFile){
         ViewUtils.setTextViewTxt(this,R.id.txv_time, "");
         ViewUtils.setEditTextTxt(this,R.id.edt_unit, "");
         ViewUtils.setEditTextTxt(this,R.id.edt_contractway, "");
@@ -246,6 +293,37 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         ViewUtils.setEditTextTxt(this,R.id.edt_visiteto, "");
         spinner_reson.setSelection(0);
         ViewUtils.setEditTextTxt(this,R.id.editText_reson, "");
+        radioGroup_type.check(R.id.radio_person);
+        //清除签字缓存文件
+        img_sign.setImageResource(R.color.white);
+        if(img_sign.getTag() != null){
+            if(isCleanSignFile){
+                File cacheFile = new File(img_sign.getTag().toString());
+                if(cacheFile.exists()){
+                    cacheFile.delete();
+                }
+            }
+            img_sign.setTag(null);
+        }
+        txv_sign.setVisibility(View.VISIBLE);
+    }
+
+    private void showSignView(View v){
+//                BCardInfo mBCardInfo = HomeCardReadHelper.getInstance().getBCardInfo();
+//                if(mBCardInfo == null){
+//                    DXToast.show("请先扫描身份证，然后再签字登记！");
+//                    return;
+//                }
+        DXSignPop signPop = new DXSignPop(this);
+        signPop.setSignCallback(new DXSignPop.SignCacllBack() {
+            @Override
+            public void callback(String filePath, Bitmap signBitmap) {
+                img_sign.setImageBitmap(signBitmap);
+                img_sign.setTag(filePath);
+                txv_sign.setVisibility(View.INVISIBLE);
+            }
+        });
+        signPop.showPop(v, "测试","5106221988");
     }
 
     public void updateTextStatus(String statusStr){
@@ -281,4 +359,34 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             Log.d(TAG,"onNothingSelected");
         }
     }
+
+    private void printAndSaveVisitInfo(){
+        //保存访客信息
+        VisitRecordEntity recordEntity = new VisitRecordEntity();
+        recordEntity.setName(ViewUtils.getTextViewString(this,R.id.tv_name));
+        recordEntity.setSex(ViewUtils.getTextViewString(this,R.id.tv_sex));
+        recordEntity.setNation(ViewUtils.getTextViewString(this,R.id.tv_nation));
+        recordEntity.setBirthday(ViewUtils.getTextViewString(this,R.id.tv_birthday));
+        recordEntity.setAddress(ViewUtils.getTextViewString(this,R.id.tv_address));
+        recordEntity.setIdNum(ViewUtils.getTextViewString(this,R.id.tv_idnumber));
+
+        recordEntity.setVisitTime(ViewUtils.getViewTagLong(this,R.id.txv_time));
+        recordEntity.setVisitUnit(ViewUtils.getTextViewString(this,R.id.edt_unit));
+        recordEntity.setVisitContract(ViewUtils.getTextViewString(this,R.id.edt_contractway));
+        recordEntity.setVisitCarnum(ViewUtils.getTextViewString(this,R.id.edt_carnum));
+        recordEntity.setBeVisited(ViewUtils.getTextViewString(this,R.id.edt_visiteto));
+        String visitReson = "";
+        if(spinner_reson.getSelectedItemPosition() == 4){
+            visitReson = ViewUtils.getEditString(this,R.id.editText_reson);
+        }else{
+            visitReson = spinner_reson.getSelectedItem().toString();
+        }
+        recordEntity.setVisitReson(visitReson);
+
+        long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+        //访客单打印被访人签名信息(外加条码)
+        String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
+        DXToast.show("条形码："+checkCode);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.haozi.idscaner2016.client.bean.client;
 
 import com.haozi.idscaner2016.client.bean.BaseEntity;
+import com.haozi.idscaner2016.common.utils.DateUtil;
 
 /**
  * Created by Haozi on 2016/4/28.
@@ -23,7 +24,7 @@ public class VisitRecordEntity extends BaseEntity {
     public String photo;
 
     /** 来访时间 */
-    public String visitTime;
+    public long visitTime;
     /** 来访单位 */
     public String visitUnit;
     /** 联系方式 */
@@ -37,8 +38,11 @@ public class VisitRecordEntity extends BaseEntity {
     /** 来访签字 */
     public String visitSign;
 
+    /** 条形码 */
+    public String checkCode;
+
     /** 离开时间 */
-    public String leaveTime;
+    public long leaveTime;
     /** 离开签字 */
     public String leaveSign;
 
@@ -98,11 +102,15 @@ public class VisitRecordEntity extends BaseEntity {
         this.photo = photo;
     }
 
-    public String getVisitTime() {
+    public long getVisitTime() {
         return visitTime;
     }
 
-    public void setVisitTime(String visitTime) {
+    public String getVisitTimeStr() {
+        return DateUtil.convertDateYYYYMMddHHmm(visitTime);
+    }
+
+    public void setVisitTime(long visitTime) {
         this.visitTime = visitTime;
     }
 
@@ -154,11 +162,15 @@ public class VisitRecordEntity extends BaseEntity {
         this.visitSign = visitSign;
     }
 
-    public String getLeaveTime() {
+    public long getLeaveTime() {
         return leaveTime;
     }
 
-    public void setLeaveTime(String leaveTime) {
+    public String getLeaveTimeStr() {
+        return DateUtil.convertDateyyyyMMddHHmmssCN(leaveTime);
+    }
+
+    public void setLeaveTime(long leaveTime) {
         this.leaveTime = leaveTime;
     }
 
@@ -168,5 +180,13 @@ public class VisitRecordEntity extends BaseEntity {
 
     public void setLeaveSign(String leaveSign) {
         this.leaveSign = leaveSign;
+    }
+
+    public String getCheckCode() {
+        return checkCode;
+    }
+
+    public void setCheckCode(String checkCode) {
+        this.checkCode = checkCode;
     }
 }
