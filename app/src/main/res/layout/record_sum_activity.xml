@@ -27,128 +27,103 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <HorizontalScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/horizontalScrollView" >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:gravity="center_vertical"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_110"
+                tools:text="2016年5月1日 22:01:02"
+                android:id="@+id/txv_date" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textSize="@dimen/font_size_110"
+                tools:text="星期一"
+                android:id="@+id/txv_week" />
+        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_size_55"
-                        android:text="来访日期："/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:hint="请选择来访日期"
-                        tools:text="2016-01-02"
-                        android:textSize="@dimen/font_size_55"
-                        android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-                        android:id="@+id/edt_visittime" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="@dimen/font_size_55"
-                    android:text="身份证号："/>
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="220dp"
-                    android:padding="8dp"
-                    android:hint="请输入身份证号码"
-                    android:textSize="@dimen/font_size_55"
-                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-                    android:id="@+id/edt_idnum" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_size_55"
-                    android:layout_marginLeft="10dp"
-                    android:text="来访者："/>
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="100dp"
-                    android:padding="8dp"
-                    android:hint="来访者姓名"
-                    android:textSize="@dimen/font_size_55"
-                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-                    android:id="@+id/edt_visitorname" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_size_55"
-                    android:layout_marginLeft="10dp"
-                    android:text="被访人："/>
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="100dp"
-                    android:padding="8dp"
-                    android:hint="被访者姓名"
-                    android:textSize="@dimen/font_size_55"
-                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-                    android:id="@+id/edt_bevisited" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_size_55"
-                    android:layout_marginLeft="10dp"
-                    android:text="车牌号："/>
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="100dp"
-                    android:padding="8dp"
-                    android:hint="来访车牌号"
-                    android:textSize="@dimen/font_size_55"
-                    android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-                    android:id="@+id/edt_carnum" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="搜索"
-                    android:id="@+id/btn_search" />
-
-
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="20dp"
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/grey_light"/>
+            android:layout_height="wrap_content">
 
-        <ListView
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textSize="@dimen/font_size_110"
+                android:text="今日进入："/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/font_size_110"
+                tools:text="10人"
+                android:id="@+id/txv_visitcount" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="20dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listView" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textSize="@dimen/font_size_110"
+                android:text="今日离开："/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/font_size_110"
+                tools:text="10人"
+                android:id="@+id/txv_leavecount" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textSize="@dimen/font_size_110"
+                android:text="未离开："/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/font_size_110"
+                tools:text="5人"
+                android:id="@+id/txv_notleavecount" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

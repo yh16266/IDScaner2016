@@ -1,6 +1,7 @@
 package com.haozi.idscaner2016.client.ui.home;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
@@ -18,6 +19,13 @@ public class RecordSearchActivity extends BaseCompatActivity {
 
     @Override
     protected void initView() {
-
+        initToolbar("搜索");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 }
