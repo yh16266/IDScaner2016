@@ -14,6 +14,9 @@ import com.haozi.idscaner2016.client.data.sqlite.base.BaseTableBody;
 import com.haozi.idscaner2016.client.data.sqlite.base.SqliteUtils;
 import com.haozi.idscaner2016.constants.Configeration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 类名：MessageTable
  * @author yinhao
@@ -269,5 +272,40 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
     	}
     	return entity;
     }
+
+	/**
+	 * 查询记录
+	 * @param recordId
+	 */
+	public List<VisitRecordEntity> getRecordList(long recordId) {
+		List<VisitRecordEntity> list = new ArrayList<>();
+		StringBuffer whereBf = new StringBuffer();
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), whereBf.toString());
+		if(csr != null) {
+			while (csr.moveToNext()){
+				list.add(refreshTableEntity(csr));
+			}
+			csr.close();
+		}
+		return list;
+	}
+
+	public int countVisitors(long startTime,long enTime){
+		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime;
+		int nowcount = SqliteUtils.getInstance().count(getTableName(),where);
+		return nowcount;
+	}
+
+	public int countVisitorsLeave(long startTime,long enTime){
+		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime;
+		int nowcount = SqliteUtils.getInstance().count(getTableName(),where);
+		return nowcount;
+	}
+
+	public int countVisitorsNotLeave(long startTime,long enTime){
+		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime;
+		int nowcount = SqliteUtils.getInstance().count(getTableName(),where);
+		return nowcount;
+	}
 
 }

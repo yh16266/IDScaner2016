@@ -8,6 +8,8 @@ import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by Haozi on 2016/5/1.
@@ -61,4 +63,45 @@ public class VisitRecordHelper extends BaseObject {
         return checkCode;
     }
 
+    public int getVisitorCount(){
+        GregorianCalendar curdar = new GregorianCalendar(Locale.getDefault());
+        GregorianCalendar todayDar = new GregorianCalendar(
+                curdar.get(GregorianCalendar.YEAR),
+                curdar.get(GregorianCalendar.MONTH),
+                curdar.get(GregorianCalendar.DAY_OF_MONTH));
+        GregorianCalendar todayDarEnd = new GregorianCalendar(
+                curdar.get(GregorianCalendar.YEAR),
+                curdar.get(GregorianCalendar.MONTH),
+                curdar.get(GregorianCalendar.DAY_OF_MONTH)+1);
+        int vistorsToday = VisitRecordTable.getInstance().countVisitors(todayDar.getTimeInMillis(),todayDarEnd.getTimeInMillis());
+        return vistorsToday;
+    }
+
+    public int getVisitorLeaveCount(){
+        GregorianCalendar curdar = new GregorianCalendar(Locale.getDefault());
+        GregorianCalendar todayDar = new GregorianCalendar(
+                curdar.get(GregorianCalendar.YEAR),
+                curdar.get(GregorianCalendar.MONTH),
+                curdar.get(GregorianCalendar.DAY_OF_MONTH));
+        GregorianCalendar todayDarEnd = new GregorianCalendar(
+                curdar.get(GregorianCalendar.YEAR),
+                curdar.get(GregorianCalendar.MONTH),
+                curdar.get(GregorianCalendar.DAY_OF_MONTH)+1);
+        int vistorsToday = VisitRecordTable.getInstance().countVisitorsLeave(todayDar.getTimeInMillis(),todayDarEnd.getTimeInMillis());
+        return vistorsToday;
+    }
+
+    public int getVisitorNotLeaveCount(){
+        GregorianCalendar curdar = new GregorianCalendar(Locale.getDefault());
+        GregorianCalendar todayDar = new GregorianCalendar(
+                curdar.get(GregorianCalendar.YEAR),
+                curdar.get(GregorianCalendar.MONTH),
+                curdar.get(GregorianCalendar.DAY_OF_MONTH));
+        GregorianCalendar todayDarEnd = new GregorianCalendar(
+                curdar.get(GregorianCalendar.YEAR),
+                curdar.get(GregorianCalendar.MONTH),
+                curdar.get(GregorianCalendar.DAY_OF_MONTH)+1);
+        int vistorsToday = VisitRecordTable.getInstance().countVisitorsNotLeave(todayDar.getTimeInMillis(),todayDarEnd.getTimeInMillis());
+        return vistorsToday;
+    }
 }
