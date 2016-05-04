@@ -30,4 +30,5 @@ dependencies {
     compile files('libs/idrinterface.jar')
     compile files('libs/idrversion.jar')
     compile files('libs/iDR410SDK.jar')
+    compile project(':Android-PullToRefresh')
 }

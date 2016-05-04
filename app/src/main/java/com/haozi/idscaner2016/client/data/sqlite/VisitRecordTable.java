@@ -6,16 +6,23 @@ package com.haozi.idscaner2016.client.data.sqlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.EntityDitionary;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.data.sqlite.base.BaseTable;
 import com.haozi.idscaner2016.client.data.sqlite.base.BaseTableBody;
 import com.haozi.idscaner2016.client.data.sqlite.base.SqliteUtils;
+import com.haozi.idscaner2016.client.utils.ViewUtils;
+import com.haozi.idscaner2016.common.utils.DateUtil;
+import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.Configeration;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 类名：MessageTable
@@ -25,7 +32,9 @@ import java.util.List;
  * @备注 [修改者，修改日期，修改内容]
  */
 public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
-	
+
+	private static final int PAGE_SIZE = 20;
+
 	/** 静态单例初始化 */
 	private static class SingletonHolder {
 		/** 静态初始化器，由JVM来保证线程安全 */
@@ -275,11 +284,43 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 
 	/**
 	 * 查询记录
-	 * @param recordId
 	 */
-	public List<VisitRecordEntity> getRecordList(long recordId) {
+	public List<VisitRecordEntity> getRecordList(String dateStr,String idnum,String visitorname,String bevisited,String carnum,int index) {
 		List<VisitRecordEntity> list = new ArrayList<>();
-		StringBuffer whereBf = new StringBuffer();
+		StringBuffer whereBf = new StringBuffer(Table.ID).append(" >= 0");
+		//日期范围
+		if(!StringUtil.isEmpty(dateStr)){
+			Date date = DateUtil.StrYYYYMMMDDToDate(dateStr);
+			if(date != null){
+				GregorianCalendar curdar = new GregorianCalendar(Locale.getDefault());
+				curdar.setTimeInMillis(date.getTime());
+				GregorianCalendar todayDarStart = new GregorianCalendar(
+						curdar.get(GregorianCalendar.YEAR),
+						curdar.get(GregorianCalendar.MONTH),
+						curdar.get(GregorianCalendar.DAY_OF_MONTH));
+				GregorianCalendar todayDarEnd = new GregorianCalendar(
+						curdar.get(GregorianCalendar.YEAR),
+						curdar.get(GregorianCalendar.MONTH),
+						curdar.get(GregorianCalendar.DAY_OF_MONTH)+1);
+				whereBf.append(" and ").append(Table.VISIT_TIME).append(" >= ").append(todayDarStart.getTimeInMillis());
+				whereBf.append(" and ").append(Table.VISIT_TIME).append(" <= ").append(todayDarEnd.getTimeInMillis());
+			}
+		}
+		if(!StringUtil.isEmpty(idnum)){
+			whereBf.append(" and ").append(Table.IDCARD_IDNUM).append(" like '%").append(idnum).append("%'");
+		}
+		if(!StringUtil.isEmpty(visitorname)){
+			whereBf.append(" and ").append(Table.IDCARD_NAME).append(" like '%").append(visitorname).append("%'");
+		}
+		if(!StringUtil.isEmpty(bevisited)){
+			whereBf.append(" and ").append(Table.VISIT_BEVISITED).append(" like '%").append(bevisited).append("%'");
+		}
+		if(!StringUtil.isEmpty(carnum)){
+			whereBf.append(" and ").append(Table.VISIT_CARNUM).append(" like '%").append(carnum).append("%'");
+		}
+		//排序分页
+		whereBf.append(" order by ").append(Table.VISIT_TIME).append(" desc limit ").append(PAGE_SIZE).append(" offset ").append((index-1)*PAGE_SIZE);
+
 		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), whereBf.toString());
 		if(csr != null) {
 			while (csr.moveToNext()){
@@ -297,13 +338,15 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 	}
 
 	public int countVisitorsLeave(long startTime,long enTime){
-		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime;
+		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime
+				+ " and " + Table.VISIT_LEAVETIME + " > 0";
 		int nowcount = SqliteUtils.getInstance().count(getTableName(),where);
 		return nowcount;
 	}
 
 	public int countVisitorsNotLeave(long startTime,long enTime){
-		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime;
+		String where = Table.VISIT_TIME + ">=" + startTime + " and "+Table.VISIT_TIME + "<=" + enTime
+				+ " and " + Table.VISIT_LEAVETIME + " <= 0";
 		int nowcount = SqliteUtils.getInstance().count(getTableName(),where);
 		return nowcount;
 	}

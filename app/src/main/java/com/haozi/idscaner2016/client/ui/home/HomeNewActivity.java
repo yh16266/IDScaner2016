@@ -38,6 +38,7 @@ import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
+import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.IActionIntent;
 import com.routon.idr.idrinterface.readcard.IReadCardService;
 import com.routon.idr.idrinterface.readcard.ReadMode;
@@ -257,14 +258,14 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 //mTextViewExpire.setText(mBCardInfo.expireStart + " - " + mBCardInfo.expireEnd);//有效日期
                 img_headicon.setImageResource(R.mipmap.icon_default_male);
             }
-            //刷新来访时间
-            long visitTime = System.currentTimeMillis();
-            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(visitTime));
-            ViewUtils.setViewTag(this,R.id.txv_time, visitTime);
             //如果是团队访问，则不会清理来访信息
             if(radioGroup_type.getCheckedRadioButtonId() == R.id.radio_person){
                 cleanVisitInfo(false);
             }
+            //刷新来访时间
+            long visitTime = System.currentTimeMillis();
+            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(visitTime));
+            ViewUtils.setViewTag(this,R.id.txv_time, visitTime);
         }else{
             //cleanIDInfo();
         }
@@ -309,11 +310,11 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     }
 
     private void showSignView(View v){
-//                BCardInfo mBCardInfo = HomeCardReadHelper.getInstance().getBCardInfo();
-//                if(mBCardInfo == null){
-//                    DXToast.show("请先扫描身份证，然后再签字登记！");
-//                    return;
-//                }
+        BCardInfo mBCardInfo = HomeCardReadHelper.getInstance().getBCardInfo();
+        if(mBCardInfo == null){
+            DXToast.show("请先扫描身份证，然后再签字登记！");
+            return;
+        }
         DXSignPop signPop = new DXSignPop(this);
         signPop.setSignCallback(new DXSignPop.SignCacllBack() {
             @Override
@@ -323,7 +324,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 txv_sign.setVisibility(View.INVISIBLE);
             }
         });
-        signPop.showPop(v, "测试","5106221988");
+        signPop.showPop(v, mBCardInfo.name,mBCardInfo.id);
     }
 
     public void updateTextStatus(String statusStr){
@@ -382,6 +383,12 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             visitReson = spinner_reson.getSelectedItem().toString();
         }
         recordEntity.setVisitReson(visitReson);
+
+        if(img_sign.getTag() == null || StringUtil.isEmpty(img_sign.getTag().toString())){
+            DXToast.show("请来访者签名确认！");
+            return;
+        }
+        recordEntity.setVisitSign(img_sign.getTag().toString());
 
         long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
         //访客单打印被访人签名信息(外加条码)

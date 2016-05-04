@@ -6,9 +6,12 @@ package com.haozi.idscaner2016.client.data.sqlite.base;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.haozi.idscaner2016.common.utils.StringUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -311,5 +314,51 @@ public class SqliteUtils {
     		}
     	}
     	return date;
+    }
+
+    /**
+     * 将值写入ContentValues中
+     * */
+    protected void setBitmapColumn(ContentValues cv,boolean isSetEmptyValue,String colName,Bitmap value){
+        if(cv == null || StringUtil.isEmpty(colName)){
+            return;
+        }
+        if(isSetEmptyValue == true){
+            ByteArrayOutputStream valueDate = new ByteArrayOutputStream();
+            if(value != null){
+                value.compress(Bitmap.CompressFormat.PNG, 100, valueDate);
+            }
+            cv.put(colName, valueDate.toByteArray());
+        }else if(isSetEmptyValue == false && value != null){
+            ByteArrayOutputStream valueDate = new ByteArrayOutputStream();
+            value.compress(Bitmap.CompressFormat.PNG, 100, valueDate);
+            cv.put(colName, valueDate.toByteArray());
+        }
+    }
+
+    /**
+     * 读取指针的BITMAP值
+     * */
+    protected Bitmap getBitmapColumn(Cursor cursor,String columnName){
+        /**得到Bitmap字节数据**/
+        Bitmap value = null;
+        if(cursor == null || StringUtil.isEmpty(columnName)){
+            return value;
+        }
+        int columnNum = cursor.getColumnIndex(columnName);
+        if(columnNum < 0){
+            return value;
+        }
+        byte[] valuedata = cursor.getBlob(cursor.getColumnIndex(columnName));
+        if(valuedata == null || valuedata.length == 0){
+            return value;
+        }
+        /**
+         * 根据Bitmap字节数据转换成 Bitmap对象
+         * BitmapFactory.decodeByteArray() 方法对字节数据，从0到字节的长进行解码，生成Bitmap对像。
+         **/
+        value = BitmapFactory.decodeByteArray(valuedata, 0, valuedata.length);
+        //返回
+        return value;
     }
 }

@@ -1,15 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:padding="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_55"
+            tools:text="李四"
+            android:id="@+id/txv_name"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_55"
+            android:layout_marginLeft="10dp"
+            tools:text="男"
+            android:id="@+id/txv_sex"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_55"
+            android:layout_marginLeft="10dp"
+            tools:text="510622198502031123"
+            android:id="@+id/txv_idnum"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal" />
+        android:textSize="@dimen/font_size_55"
+        android:text="来访时间："/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_size_55"
+        tools:text="2016-05-04 10:21:22"
+        android:id="@+id/txv_visitetime"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_55"
+            android:text="联系方式："/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_55"
+            android:maxLength="40"
+            android:ellipsize="end"
+            tools:text="15822331144"
+            android:id="@+id/txv_contract"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textSize="@dimen/font_size_55"
+            android:text="车牌号码："/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_size_55"
+            android:maxLength="40"
+            android:ellipsize="end"
+            tools:text="川A1234"
+            android:id="@+id/txv_carnum"/>
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:text="来访单位："/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:singleLine="true"
+                android:ellipsize="end"
+                tools:text="某机构研究局某机构研究局某机构研究局某机构研究局"
+                android:id="@+id/txv_visiteunit"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:text="来访事由："/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:singleLine="true"
+                android:ellipsize="end"
+                tools:text="各种原因"
+                android:id="@+id/txv_reson"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:text="被访人："/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:maxLength="40"
+                android:ellipsize="end"
+                tools:text="某机构研究"
+                android:id="@+id/txv_bevisited"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:layout_marginLeft="20dp"
+                android:text="打印状态："/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:maxLength="40"
+                android:ellipsize="end"
+                tools:text="已打印"
+                android:id="@+id/txv_printstatu"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:layout_marginLeft="20dp"
+                android:text="离开时间："/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_55"
+                android:maxLength="40"
+                android:ellipsize="end"
+                tools:text="未离开"
+                android:id="@+id/txv_leavetime"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>
