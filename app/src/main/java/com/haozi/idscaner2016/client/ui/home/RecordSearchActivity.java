@@ -74,6 +74,9 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
         List<VisitRecordEntity> list = VisitRecordTable.getInstance()
                 .getRecordList(date,idnum,visitorname,bevisited,carnum,index);
         mListview.onRefreshComplete();
+        if(list != null && list.size() > 0){
+            setNowPage(index);
+        }
         if(index == IConstants.PAGE_START_INDEX){
             mAdapter.setDataList(list);
         }else{
