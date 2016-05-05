@@ -37,4 +37,20 @@ public class EntityDitionary {
     	}
     }
 
+	/**用户类型*/
+	public enum SysCodeType{
+
+		/**单位*/
+		unit("unit");
+
+		private String mValue;
+
+		private SysCodeType(String value){
+			mValue = value;
+		}
+
+		public String getValue(){
+			return String.valueOf(mValue);
+		}
+	}
 }
