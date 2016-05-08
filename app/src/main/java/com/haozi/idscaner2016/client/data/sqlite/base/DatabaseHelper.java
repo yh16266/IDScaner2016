@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
+import com.haozi.idscaner2016.client.data.sqlite.SystemCodeTable;
 import com.haozi.idscaner2016.client.data.sqlite.UserTable;
 import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.common.app.MyApp;
@@ -24,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/** 数据库名称 */
 	private static final String DB_NAME = "mydata.db";
 	/** 数据库版本 */
-	private static final int version = 10;
+	private static final int version = 11;
 
 	public DatabaseHelper() {
 		super(MyApp.getInstance(), DB_NAME, null, version);
@@ -61,12 +62,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private void createAllTable(SQLiteDatabase db) {
 		db.execSQL(UserTable.getInstance().getCreateTableSql());
 		db.execSQL(VisitRecordTable.getInstance().getCreateTableSql());
+		db.execSQL(SystemCodeTable.getInstance().getCreateTableSql());
 
 	}
 
 	private void deleteAllTable(SQLiteDatabase db) {
 		db.execSQL("DROP TABLE IF EXISTS "+ UserTable.getInstance().getTableName());
 		db.execSQL("DROP TABLE IF EXISTS "+ VisitRecordTable.getInstance().getTableName());
+		db.execSQL("DROP TABLE IF EXISTS "+ SystemCodeTable.getInstance().getTableName());
 	}
 
 }

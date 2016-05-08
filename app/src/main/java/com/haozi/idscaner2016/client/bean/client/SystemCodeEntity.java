@@ -11,6 +11,7 @@ public class SystemCodeEntity extends BaseEntity{
     private String code;
     private String name;
     private int order;
+    private long createTime;
 
     public String getType() {
         return type;
@@ -42,5 +43,13 @@ public class SystemCodeEntity extends BaseEntity{
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
     }
 }

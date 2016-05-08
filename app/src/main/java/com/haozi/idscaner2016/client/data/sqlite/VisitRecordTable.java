@@ -266,6 +266,22 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		return entity;
 	}
 
+	/**
+	 * 查询记录
+	 * @param checkCode
+	 */
+	public VisitRecordEntity getRecordByCheckCode(String checkCode) {
+		VisitRecordEntity entity = null;
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(),Table.VISIT_CHECKCODE + "='" + checkCode +"'");
+		if(csr != null) {
+			if(csr.moveToFirst()) {
+				entity = refreshTableEntity(csr);
+			}
+			csr.close();
+		}
+		return entity;
+	}
+
     /**
      * 查询记录
      * @param recordId

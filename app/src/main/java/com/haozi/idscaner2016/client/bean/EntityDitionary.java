@@ -37,7 +37,7 @@ public class EntityDitionary {
     	}
     }
 
-	/**用户类型*/
+	/**字典类型*/
 	public enum SysCodeType{
 
 		/**单位*/

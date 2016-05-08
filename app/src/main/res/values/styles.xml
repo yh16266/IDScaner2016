@@ -75,4 +75,10 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="leave_row" parent="card_row">
+        <item name="android:layout_width">600dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
+
 </resources>

@@ -28,6 +28,7 @@
 
         <activity android:name=".client.ui.wellcome.WellcomeActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,29 +39,40 @@
         <activity
             android:name=".client.ui.home.HomeNewActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
         <activity
             android:name=".client.ui.home.HomeActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
         <activity
             android:name=".client.ui.home.RecordSearchActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
         <activity
             android:name=".client.ui.home.RecordSumActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
         <activity
             android:name=".client.ui.home.SignActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+
+        <activity
+            android:name=".client.ui.home.UnitManageActivity"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 

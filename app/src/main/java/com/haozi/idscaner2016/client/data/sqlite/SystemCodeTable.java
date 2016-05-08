@@ -50,7 +50,9 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
 		/** 代码 */
 		public static final String CODE = "CODE";
 		/** 排序 */
-		public static final String ORDER = "ORDER";
+		public static final String ORDER_INDDEX = "ORDER_INDDEX";
+		/** 创建时间 */
+		public static final String CREATE_TIME = "CREATE_TIME";
 	}
 	
 	/**
@@ -61,7 +63,8 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
 		sql.append(Table.TYPE).append(" TEXT, ");
 		sql.append(Table.NAME).append(" TEXT, ");
 		sql.append(Table.CODE).append(" TEXT, ");
-		sql.append(Table.ORDER).append(" TEXT ");
+		sql.append(Table.ORDER_INDDEX).append(" TEXT, ");
+		sql.append(Table.CREATE_TIME).append(" BIGINT ");
 		return SqliteUtils.getInstance().getCreateSql(getTableName(), sql.toString());
 	}
 
@@ -79,7 +82,8 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
 		cv.put(Table.TYPE, tableEntity.getType());
 		cv.put(Table.NAME, tableEntity.getName());
 		cv.put(Table.CODE, tableEntity.getCode());
-		cv.put(Table.ORDER,tableEntity.getOrder());
+		cv.put(Table.ORDER_INDDEX,tableEntity.getOrder());
+		cv.put(Table.CREATE_TIME,tableEntity.getCreateTime());
 		return cv;
 	}
 
@@ -100,7 +104,8 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
 		tableEntity.setType(SqliteUtils.getInstance().getStringColumn(csr, Table.TYPE));
 		tableEntity.setName(SqliteUtils.getInstance().getStringColumn(csr, Table.NAME));
 		tableEntity.setCode(SqliteUtils.getInstance().getStringColumn(csr, Table.CODE));
-		tableEntity.setOrder(SqliteUtils.getInstance().getIntColumn(csr, Table.ORDER));
+		tableEntity.setOrder(SqliteUtils.getInstance().getIntColumn(csr, Table.ORDER_INDDEX));
+		tableEntity.setCreateTime(SqliteUtils.getInstance().getLongColumn(csr, Table.CREATE_TIME));
 		return tableEntity;
 	}
 
@@ -165,9 +170,10 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
      * 查询记录
      * @param type
      */
-    public SystemCodeEntity getRecordByType(String type) {
+    public SystemCodeEntity getRecordByTypeAndCode(String type,String code) {
 		SystemCodeEntity entity = null;
-		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), Table.TYPE + "='" + type +"'");
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), Table.TYPE + "='" + type
+				+"' and "+ Table.CODE +" ='"+code+"'");
 		if(csr != null) {
 			if(csr.moveToFirst()) {
 				entity = refreshTableEntity(csr);
@@ -196,10 +202,14 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
 	/**
 	 * 查询记录
 	 */
-	public List<SystemCodeEntity> getRecordList(String name,int index) {
+	public List<SystemCodeEntity> getRecordListPageByType(String codeType,String name,int index) {
 		List<SystemCodeEntity> list = new ArrayList<>();
-		StringBuffer whereBf = new StringBuffer(Table.ID).append(" >= 0");
-		if(!StringUtil.isEmpty(name)){
+		//检索条件
+		StringBuffer whereBf = new StringBuffer();
+		//类型
+		whereBf.append(Table.TYPE).append(" = '").append(codeType).append("'");
+		//名称模糊查询
+		if(StringUtil.isEmpty(name) == false){
 			whereBf.append(" and ").append(Table.NAME).append(" like '%").append(name).append("%'");
 		}
 		//排序分页
@@ -215,4 +225,52 @@ public class SystemCodeTable extends BaseTable<SystemCodeEntity> {
 		return list;
 	}
 
+	/**
+	 * 查询记录
+	 */
+	public List<SystemCodeEntity> getRecordListByType(String codeType,String name) {
+		//列表
+		List<SystemCodeEntity> list = new ArrayList<>();
+		//查询条件
+		StringBuffer whereBf = new StringBuffer();
+		//类型
+		whereBf.append(Table.TYPE).append(" = '").append(codeType).append("'");
+		//名称模糊查询
+		if(StringUtil.isEmpty(name) == false){
+			whereBf.append(" and ").append(Table.NAME).append(" like '%").append(name).append("%'");
+		}
+		//排序分页
+		whereBf.append(" order by ").append(Table.ID);
+
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), whereBf.toString());
+		if(csr != null) {
+			while (csr.moveToNext()){
+				list.add(refreshTableEntity(csr));
+			}
+			csr.close();
+		}
+		return list;
+	}
+
+	/**
+	 * 查询记录
+	 */
+	public String[] getRecordNameArray(String codeType,String name) {
+		//列表
+		String[] list;
+		//查询条件
+		StringBuffer whereBf = new StringBuffer();
+		//类型
+		whereBf.append(Table.TYPE).append(" = '").append(codeType).append("'");
+		//名称模糊查询
+		if(StringUtil.isEmpty(name) == false){
+			whereBf.append(" and ").append(Table.NAME).append(" like '%").append(name).append("%'");
+		}
+		//排序分页
+		whereBf.append(" order by ").append(Table.ID);
+
+		list = SqliteUtils.getInstance().getStringArray(Table.NAME, getTableName(), whereBf.toString());
+
+		return list;
+	}
 }

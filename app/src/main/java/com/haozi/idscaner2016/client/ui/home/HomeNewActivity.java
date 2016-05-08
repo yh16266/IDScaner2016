@@ -1,5 +1,7 @@
 package com.haozi.idscaner2016.client.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -32,6 +34,7 @@ import com.haozi.idscaner2016.client.biz.cardread.ReadCardSound;
 import com.haozi.idscaner2016.client.biz.cardread.ReadInfoCallback;
 import com.haozi.idscaner2016.client.biz.cardread.ReadServiceConnection;
 import com.haozi.idscaner2016.client.biz.home.HomeCardReadHelper;
+import com.haozi.idscaner2016.client.biz.home.UnityManageHelper;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXSignPop;
 import com.haozi.idscaner2016.client.control.DXToast;
@@ -65,6 +68,8 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     private ArrayAdapter spinnerResonAdapter;
     private ImageView img_headicon;
     private EditText editText_reson;
+    private EditText edt_unit;
+    private TextView txv_unit;
     private RadioGroup radioGroup_type;
 
     @Override
@@ -89,6 +94,11 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         mButtonPause = (Button) findViewById(R.id.btn_pause);
         mButtonStop = (Button) findViewById(R.id.btn_stop);
         editText_reson = (EditText) findViewById(R.id.editText_reson);
+
+        edt_unit = (EditText) findViewById(R.id.edt_unit);
+        txv_unit = (TextView) findViewById(R.id.txv_unit);
+        edt_unit.setVisibility(View.GONE);
+        txv_unit.setOnClickListener(this);
 
         mButtonPause.setOnClickListener(this);
         mButtonStart.setOnClickListener(this);
@@ -124,13 +134,15 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                DXToast.show("搜索");
                 Intent intent = new Intent(this,RecordSearchActivity.class);
                 startActivity(intent);
                 break;
             case R.id.menu_sum:
-                DXToast.show("统计");
                 intent = new Intent(this,RecordSumActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_unit:
+                intent = new Intent(this,UnitManageActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -153,6 +165,9 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()){
+            case R.id.txv_unit:
+                showUnitDialog(v);
+                break;
             case R.id.txv_sign:
                 showSignView(v);
                 break;
@@ -161,6 +176,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 cleanVisitInfo(true);
                 break;
             case R.id.btn_leve:
+                LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
                 break;
             case R.id.btn_print:
                 printAndSaveVisitInfo();
@@ -262,6 +278,15 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             if(radioGroup_type.getCheckedRadioButtonId() == R.id.radio_person){
                 cleanVisitInfo(false);
             }
+            //查询是否已登记并且未登记离开，若成立，则提示离开登记
+            String mIdNum = ViewUtils.getTextViewString(this,R.id.tv_idnumber);
+            if(!StringUtil.isEmpty(mIdNum)){
+                VisitRecordEntity mRecord = VisitRecordHelper.getInstance().getRecordByIdNum(mIdNum);
+                if(mRecord != null){
+                    LeaveConfirmDialog.showByIdNum(this,mIdNum);
+                    return;
+                }
+            }
             //刷新来访时间
             long visitTime = System.currentTimeMillis();
             ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(visitTime));
@@ -307,6 +332,29 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             img_sign.setTag(null);
         }
         txv_sign.setVisibility(View.VISIBLE);
+    }
+
+    private void showUnitDialog(View view){
+        final String items[]= UnityManageHelper.getInstance().getRecordNameArray();
+        //dialog参数设置
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);  //先得到构造器
+        builder.setTitle("来访单位");
+        //设置列表显示，注意设置了列表显示就不要设置builder.setMessage()了，否则列表不起作用。
+        builder.setItems(items,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                txv_unit.setText(items[which]);
+                edt_unit.setText(items[which]);
+            }
+        });
+        builder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private void showSignView(View v){
@@ -373,9 +421,17 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
 
         recordEntity.setVisitTime(ViewUtils.getViewTagLong(this,R.id.txv_time));
         recordEntity.setVisitUnit(ViewUtils.getTextViewString(this,R.id.edt_unit));
+        if(StringUtil.isEmpty(recordEntity.getVisitUnit())){
+            DXToast.show("请填写来访单位");
+            return;
+        }
         recordEntity.setVisitContract(ViewUtils.getTextViewString(this,R.id.edt_contractway));
         recordEntity.setVisitCarnum(ViewUtils.getTextViewString(this,R.id.edt_carnum));
         recordEntity.setBeVisited(ViewUtils.getTextViewString(this,R.id.edt_visiteto));
+        if(StringUtil.isEmpty(recordEntity.getBeVisited())){
+            DXToast.show("请填写被访人");
+            return;
+        }
         String visitReson = "";
         if(spinner_reson.getSelectedItemPosition() == 4){
             visitReson = ViewUtils.getEditString(this,R.id.editText_reson);
@@ -383,6 +439,10 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             visitReson = spinner_reson.getSelectedItem().toString();
         }
         recordEntity.setVisitReson(visitReson);
+        if(StringUtil.isEmpty(recordEntity.getVisitReson())){
+            DXToast.show("请填写访问理由");
+            return;
+        }
 
         if(img_sign.getTag() == null || StringUtil.isEmpty(img_sign.getTag().toString())){
             DXToast.show("请来访者签名确认！");
@@ -394,6 +454,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         //访客单打印被访人签名信息(外加条码)
         String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
         DXToast.show("条形码："+checkCode);
+
     }
 
 }

@@ -18,4 +18,11 @@
         android:title="统计"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/menu_unit"
+        android:orderInCategory="80"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="单位管理"
+        app:showAsAction="ifRoom"/>
+
 </menu>

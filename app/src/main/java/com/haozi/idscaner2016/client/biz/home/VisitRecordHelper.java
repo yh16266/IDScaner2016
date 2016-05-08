@@ -40,7 +40,7 @@ public class VisitRecordHelper extends BaseObject {
         return -1;
     }
 
-    private void visiterLeave(String idNum){
+    public void visiterLeave(String idNum){
         VisitRecordEntity entity = VisitRecordTable.getInstance().getRecord(idNum);
         entity.setLeaveTime(System.currentTimeMillis());
         VisitRecordTable.getInstance().updateRecordByIDNum(entity);
@@ -103,5 +103,13 @@ public class VisitRecordHelper extends BaseObject {
                 curdar.get(GregorianCalendar.DAY_OF_MONTH)+1);
         int vistorsToday = VisitRecordTable.getInstance().countVisitorsNotLeave(todayDar.getTimeInMillis(),todayDarEnd.getTimeInMillis());
         return vistorsToday;
+    }
+
+    public VisitRecordEntity getRecordByIdNum(String idNum){
+        return VisitRecordTable.getInstance().getRecord(idNum);
+    }
+
+    public VisitRecordEntity getRecordByCheckCode(String idNum){
+        return VisitRecordTable.getInstance().getRecord(idNum);
     }
 }
