@@ -1,6 +1,8 @@
 package com.haozi.idscaner2016.client.ui.home;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +11,15 @@ import android.widget.TextView;
 
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
+import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
+import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.common.base.BasePageAdapter;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 
 /**
  * Created by Haozi on 2016/5/4.
  */
-public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> {
+public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> implements View.OnClickListener{
 
     public RecordListViewAdapter(Context context){
         this.mContext = context;
@@ -45,8 +49,12 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> {
         }
         if(entity.getLeaveTime() <= 0){
             holder.txv_leavetime.setText("未离开");
+            holder.txv_leave.setVisibility(View.VISIBLE);
+            holder.txv_leave.setTag(entity);
+            holder.txv_leave.setOnClickListener(this);
         }else{
             holder.txv_leavetime.setText(entity.getLeaveTimeStr());
+            holder.txv_leave.setVisibility(View.GONE);
         }
     }
 
@@ -65,8 +73,18 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> {
         viewHolder.txv_bevisited = (TextView) convertView.findViewById(R.id.txv_bevisited);
         viewHolder.txv_printstatu = (TextView) convertView.findViewById(R.id.txv_printstatu);
         viewHolder.txv_leavetime = (TextView) convertView.findViewById(R.id.txv_leavetime);
+        viewHolder.txv_leave = (TextView) convertView.findViewById(R.id.txv_leave);
         convertView.setTag(viewHolder);
         return convertView;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.txv_leave:
+                setLeave(view);
+                break;
+        }
     }
 
     private class ViewHolder{
@@ -81,5 +99,30 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> {
         TextView txv_bevisited;
         TextView txv_printstatu;
         TextView txv_leavetime;
+        TextView txv_leave;
+    }
+
+    private void setLeave(View view){
+        if(view.getTag() == null){
+            return;
+        }
+        final VisitRecordEntity entity = (VisitRecordEntity)view.getTag();
+        if(entity == null){
+            return;
+        }
+        AlertDialog.Builder builder=new AlertDialog.Builder(mContext);  //先得到构造器
+        builder.setTitle("人工签离");
+        //设置列表显示，注意设置了列表显示就不要设置builder.setMessage()了，否则列表不起作用。
+        builder.setMessage("请确实是否手动对该用户执行签离操作？");
+        builder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                VisitRecordHelper.getInstance().visiterLeave(entity.getIdNum());
+                entity.setLeaveTime(System.currentTimeMillis());
+                notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }

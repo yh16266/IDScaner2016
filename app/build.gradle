@@ -31,4 +31,6 @@ dependencies {
     compile files('libs/idrversion.jar')
     compile files('libs/iDR410SDK.jar')
     compile project(':Android-PullToRefresh')
+    compile 'com.google.zxing:core:3.2.1'
+    compile 'com.jakewharton:butterknife:8.0.1'
 }

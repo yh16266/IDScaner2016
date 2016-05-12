@@ -176,7 +176,9 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 cleanVisitInfo(true);
                 break;
             case R.id.btn_leve:
-                LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
+                Intent intent = new Intent(this,CodeScanActivity.class);
+                startActivity(intent);
+                //LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
                 break;
             case R.id.btn_print:
                 printAndSaveVisitInfo();
