@@ -16,12 +16,19 @@
 package com.haozi.idscaner2016.zxingscan.zxing.camera;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.Display;
+import android.view.Surface;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.control.DXToast;
+import com.haozi.idscaner2016.common.app.MyApp;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,7 +129,62 @@ public final class CameraConfigurationManager {
 		}
 
 		/** 设置相机预览为竖屏 */
-		camera.setDisplayOrientation(90);
+		//camera.setDisplayOrientation(90);
+		setDisplayOrientation(camera);
+	}
+
+	private void setDisplayOrientation(Camera camera){
+		android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+		android.hardware.Camera.getCameraInfo (getDefaultCameraId() , info);
+		int rotation = ((Activity)context).getWindowManager().getDefaultDisplay().getRotation();
+		int degrees = 0;
+		switch (rotation) {
+			case Surface.ROTATION_0:
+				degrees = 0;
+				break;
+			case Surface.ROTATION_90:
+				degrees = 90;
+				break;
+			case Surface.ROTATION_180:
+				degrees = 180;
+				break;
+			case Surface.ROTATION_270:
+				degrees = 270;
+				break;
+		}
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360;   // compensate the mirror
+		} else {
+			// back-facing
+			result = ( info.orientation - degrees + 360) % 360;
+		}
+		camera.setDisplayOrientation (result);
+	}
+
+	private int getDefaultCameraId(){
+		int defaultId = -1;
+		// Find the total number of cameras available
+		int mNumberOfCameras = Camera.getNumberOfCameras();
+		// Find the ID of the default camera
+		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+		for (int i = 0; i < mNumberOfCameras; i++){
+			Camera.getCameraInfo(i, cameraInfo);
+			if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK){
+				defaultId = i;
+			}
+		}
+		if (-1 == defaultId){
+			if (mNumberOfCameras > 0){
+				// 如果没有后向摄像头
+				defaultId = 0;
+			}else{
+				// 没有摄像头
+				DXToast.show("没有发现摄像头");
+			}
+		}
+		return defaultId;
 	}
 
 	public Point getCameraResolution() {

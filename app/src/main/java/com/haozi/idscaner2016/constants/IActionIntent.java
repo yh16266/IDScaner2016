@@ -30,4 +30,6 @@ public class IActionIntent {
 	
 	/** 身份证号码 */
 	public static final String INTENTEXTRA_IDNUM = "INTENTEXTRA_IDNUM";
+	/** 记录ID */
+	public static final String INTENTEXTRA_RECORDID = "INTENTEXTRA_RECORDID";
 }

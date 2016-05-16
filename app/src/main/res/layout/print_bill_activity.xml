@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="800dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="访客单"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:background="@drawable/border_black_bold_shape_xml"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_black_bold_shape_xml"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:textSize="@dimen/font_size_80"
+                        android:text="姓名"/>
+
+                    <TextView
+                        android:layout_width="2px"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/font_size_80"
+                        android:background="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_size_80"
+                        android:layout_margin="10dp"
+                        tools:text="胡安三"
+                        android:id="@+id/txv_username" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_black_bold_shape_xml"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:textSize="@dimen/font_size_80"
+                        android:text="性别"/>
+
+                    <TextView
+                        android:layout_width="2px"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/font_size_80"
+                        android:background="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_size_80"
+                        android:layout_margin="10dp"
+                        tools:text="男"
+                        android:id="@+id/txv_sex" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_black_bold_shape_xml"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:textSize="@dimen/font_size_80"
+                        android:text="身份证号"/>
+
+                    <TextView
+                        android:layout_width="2px"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/font_size_80"
+                        android:background="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_size_80"
+                        android:layout_margin="10dp"
+                        tools:text="510622198877665544"
+                        android:id="@+id/txv_idnum" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_black_bold_shape_xml"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:textSize="@dimen/font_size_80"
+                        android:text="到访时间"/>
+
+                    <TextView
+                        android:layout_width="2px"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/font_size_80"
+                        android:background="@android:color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_size_80"
+                        android:layout_margin="10dp"
+                        tools:text="2016-01-01 15：00"
+                        android:id="@+id/txv_visitetime" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="190dp"
+                android:src="@mipmap/icon_default_male"
+                android:id="@+id/imageView" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:background="@drawable/border_black_bold_shape_xml">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="@dimen/font_size_80"
+                android:text="被访部门"/>
+
+            <TextView
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/font_size_80"
+                android:background="@android:color/black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_80"
+                android:layout_margin="10dp"
+                tools:text="某某某办公室"
+                android:id="@+id/txv_visitunit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:background="@drawable/border_black_bold_shape_xml">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="@dimen/font_size_80"
+                android:text="被访人"/>
+
+            <TextView
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/font_size_80"
+                android:background="@android:color/black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_80"
+                android:layout_margin="10dp"
+                tools:text="王师傅"
+                android:id="@+id/txv_bevisited" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:background="@drawable/border_black_bold_shape_xml">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="@dimen/font_size_80"
+                android:text="来访事由"/>
+
+            <TextView
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/font_size_80"
+                android:background="@android:color/black"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_80"
+                android:layout_margin="10dp"
+                tools:text="来访问隔壁老王"
+                android:id="@+id/txv_reason" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:background="@drawable/border_black_bold_shape_xml">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView2" />
+
+            <TextView
+                android:layout_width="2px"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/font_size_80"
+                android:background="@android:color/black"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

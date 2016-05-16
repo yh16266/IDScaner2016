@@ -43,6 +43,7 @@ import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.IActionIntent;
+import com.haozi.idscaner2016.zxingscan.utils.Constant;
 import com.routon.idr.idrinterface.readcard.IReadCardService;
 import com.routon.idr.idrinterface.readcard.ReadMode;
 import com.routon.idr.idrinterface.readcard.ReadState;
@@ -177,6 +178,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 break;
             case R.id.btn_leve:
                 Intent intent = new Intent(this,CodeScanActivity.class);
+                //intent.putExtra(Constant.REQUEST_SCAN_MODE, Constant.REQUEST_SCAN_MODE_BARCODE_MODE);
                 startActivity(intent);
                 //LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
                 break;
@@ -451,12 +453,12 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             return;
         }
         recordEntity.setVisitSign(img_sign.getTag().toString());
-
+        //保存录入信息
         long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
-        //访客单打印被访人签名信息(外加条码)
-        String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
-        DXToast.show("条形码："+checkCode);
-
+        //跳转到打印页面
+        Intent intent = new Intent(this,PrintBillActivity.class);
+        intent.putExtra(IActionIntent.INTENTEXTRA_RECORDID,newID);
+        startActivity(intent);
     }
 
 }

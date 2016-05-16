@@ -1,5 +1,4 @@
 <resources>
-    <string name="hello_world">Hello world!</string>
     <string name="scan_barcode_title">条形码扫描</string>
     <string name="scan_qrcode_title">二维码扫描</string>
     <string name="scan_allcode_title">二维码或条形码扫描</string>
