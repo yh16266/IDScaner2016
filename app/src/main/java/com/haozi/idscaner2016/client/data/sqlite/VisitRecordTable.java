@@ -266,6 +266,25 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		return entity;
 	}
 
+    /**
+     * 查询记录
+     * @param idNum
+     */
+    public VisitRecordEntity getRecordNotLeave(String idNum) {
+		VisitRecordEntity entity = null;
+		StringBuffer whereStr = new StringBuffer(Table.IDCARD_IDNUM).append("='").append(idNum).append("' ");
+		whereStr.append(" AND (").append(Table.VISIT_TIME).append(" IS NULL");
+		whereStr.append(" OR ").append(Table.VISIT_TIME).append(" <= 0 )");
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), whereStr.toString());
+		if(csr != null) {
+			if(csr.moveToFirst()) {
+				entity = refreshTableEntity(csr);
+			}
+			csr.close();
+		}
+		return entity;
+	}
+
 	/**
 	 * 查询记录
 	 * @param checkCode

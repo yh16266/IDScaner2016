@@ -91,7 +91,7 @@ public class PrinterConnectDialog extends Activity {
 	private void initPortParam() {
 		Intent intent = getIntent();
 		boolean[] state = intent
-				.getBooleanArrayExtra(MainActivity.CONNECT_STATUS);
+				.getBooleanArrayExtra(GprinterMainActivity.CONNECT_STATUS);
 		for (int i = 0; i < GpPrintService.MAX_PRINTER_CNT; i++) {
 			PortParamDataBase database = new PortParamDataBase(this);
 			mPortParam[i] = new PortParameters();

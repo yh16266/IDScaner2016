@@ -24,6 +24,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.gprinter.printer.GprinterMainActivity;
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
@@ -183,7 +184,9 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 //LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
                 break;
             case R.id.btn_print:
-                printAndSaveVisitInfo();
+                //printAndSaveVisitInfo();
+                intent = new Intent(this,GprinterMainActivity.class);
+                startActivity(intent);
                 break;
             default:
                 HomeCardReadHelper.getInstance().startReading(v);
@@ -285,7 +288,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             //查询是否已登记并且未登记离开，若成立，则提示离开登记
             String mIdNum = ViewUtils.getTextViewString(this,R.id.tv_idnumber);
             if(!StringUtil.isEmpty(mIdNum)){
-                VisitRecordEntity mRecord = VisitRecordHelper.getInstance().getRecordByIdNum(mIdNum);
+                VisitRecordEntity mRecord = VisitRecordHelper.getInstance().getRecordNotLeave(mIdNum);
                 if(mRecord != null){
                     LeaveConfirmDialog.showByIdNum(this,mIdNum);
                     return;
@@ -456,7 +459,8 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         //保存录入信息
         long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
         //跳转到打印页面
-        Intent intent = new Intent(this,PrintBillActivity.class);
+        //Intent intent = new Intent(this,PrintBillActivity.class);
+        Intent intent = new Intent(this,GprinterMainActivity.class);
         intent.putExtra(IActionIntent.INTENTEXTRA_RECORDID,newID);
         startActivity(intent);
     }

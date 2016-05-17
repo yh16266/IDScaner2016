@@ -73,12 +73,16 @@ public class LeaveConfirmDialog extends Dialog implements View.OnClickListener{
         findViewById(R.id.button_cancel).setOnClickListener(this);
 
         if(!StringUtil.isEmpty(mIdNum)){
-            mRecord = VisitRecordHelper.getInstance().getRecordByIdNum(mIdNum);
+            mRecord = VisitRecordHelper.getInstance().getRecordNotLeave(mIdNum);
         }else if(!StringUtil.isEmpty(mCheckCode)){
             mRecord = VisitRecordHelper.getInstance().getRecordByCheckCode(mCheckCode);
         }
         if(mRecord == null){
             DXToast.show("该人员并未进行来访登记");
+            findViewById(R.id.button_confirm).setEnabled(false);
+            dismiss();
+        }else if(mRecord.getLeaveTime() > 0){
+            DXToast.show("该人员已经登记离开，不能重复登记");
             findViewById(R.id.button_confirm).setEnabled(false);
             dismiss();
         }else{

@@ -105,11 +105,15 @@ public class VisitRecordHelper extends BaseObject {
         return vistorsToday;
     }
 
-    public VisitRecordEntity getRecordByIdNum(String idNum){
-        return VisitRecordTable.getInstance().getRecord(idNum);
+    public VisitRecordEntity getRecordNotLeave(String idNum){
+        return VisitRecordTable.getInstance().getRecordNotLeave(idNum);
     }
 
     public VisitRecordEntity getRecordByCheckCode(String idNum){
         return VisitRecordTable.getInstance().getRecord(idNum);
+    }
+
+    public VisitRecordEntity getRecordByIdNum(String mIdNum) {
+        return VisitRecordTable.getInstance().getRecord(mIdNum);
     }
 }

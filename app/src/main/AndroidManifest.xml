@@ -101,6 +101,31 @@
         </activity>
 
         <!--蓝牙打印机-->
+        <activity
+            android:name="com.gprinter.printer.GprinterMainActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.gprinter.printer.PrinterConnectDialog"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.gprinter.printer.BluetoothDeviceList"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.gprinter.printer.PortConfigurationActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.gprinter.printer.UsbDeviceList"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
 
         <service
             android:name="com.gprinter.service.GpPrintService"

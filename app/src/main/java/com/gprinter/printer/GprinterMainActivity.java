@@ -41,10 +41,10 @@ import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Vector;
 
-public class MainActivity extends Activity {
+public class GprinterMainActivity extends Activity {
     private GpService mGpService = null;
     public static final String CONNECT_STATUS = "connect.status";
-    private static final String DEBUG_TAG = "MainActivity";
+    private static final String DEBUG_TAG = "GprinterMainActivity";
     private PrinterServiceConnection conn = null;
     private int mPrinterIndex = 0;
     private int mTotalCopies1 = 0, mTotalCopies2 = 0, mTotalCopies3 = 0;
@@ -106,8 +106,7 @@ public class MainActivity extends Activity {
 
     public void openPortDialogueClicked(View view) {
         Log.d(DEBUG_TAG, "openPortConfigurationDialog ");
-        Intent intent = new Intent(this,
-                PrinterConnectDialog.class);
+        Intent intent = new Intent(this,PrinterConnectDialog.class);
         boolean[] state = getConnectState();
         intent.putExtra(CONNECT_STATUS, state);
         this.startActivity(intent);
