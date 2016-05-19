@@ -136,8 +136,7 @@ public class GprinterMainActivity extends Activity {
             } else {
                 str = "打印机断开";
             }
-            Toast.makeText(getApplicationContext(),
-                    "打印机：" + mPrinterIndex + " 连接状态：" + str, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "打印机：" + mPrinterIndex + " 连接状态：" + str, Toast.LENGTH_SHORT).show();
         } catch (RemoteException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.gprinter.printer.GprinterMainActivity;
+import com.gprinter.printer.PrinterConnectDialog;
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
@@ -44,6 +45,7 @@ import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.IActionIntent;
+import com.haozi.idscaner2016.gpringter.GpringterHelper;
 import com.haozi.idscaner2016.zxingscan.utils.Constant;
 import com.routon.idr.idrinterface.readcard.IReadCardService;
 import com.routon.idr.idrinterface.readcard.ReadMode;
@@ -78,6 +80,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
+        GpringterHelper.getInstance().connection(this);
     }
 
     @Override
@@ -184,9 +187,9 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 //LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
                 break;
             case R.id.btn_print:
-                //printAndSaveVisitInfo();
-                intent = new Intent(this,GprinterMainActivity.class);
-                startActivity(intent);
+                printAndSaveVisitInfo();
+                //intent = new Intent(this,GprinterMainActivity.class);
+                //startActivity(intent);
                 break;
             default:
                 HomeCardReadHelper.getInstance().startReading(v);
@@ -228,6 +231,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         super.onDestroy();
         HomeCardReadHelper.getInstance().unRegister(this);
         HomeCardReadHelper.getInstance().unbindReadCardService(this);
+        GpringterHelper.getInstance().unBindConnection(this);
         Log.d(TAG,"onDestroy");
     }
 
@@ -418,6 +422,30 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
 
     private void printAndSaveVisitInfo(){
         //保存访客信息
+        VisitRecordEntity recordEntity = refershRecordInfo();
+        if(recordEntity == null){
+            return;
+        }
+        //保存录入信息
+        long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+        //跳转到打印页面
+        boolean isConnected = GpringterHelper.getInstance().getPrinterConnectStatusClicked();
+        if(isConnected == false){
+            Intent intent = new Intent(this,PrinterConnectDialog.class);
+            boolean[] state = GpringterHelper.getInstance().getConnectState();
+            intent.putExtra(GpringterHelper.CONNECT_STATUS, state);
+            this.startActivity(intent);
+        }else{
+            boolean printerStatu = GpringterHelper.getInstance().getPrinterStatusClicked();
+            if(printerStatu == true){
+                String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
+                GpringterHelper.getInstance().sendReceipt();
+            }
+        }
+    }
+
+    private VisitRecordEntity refershRecordInfo(){
+        //保存访客信息
         VisitRecordEntity recordEntity = new VisitRecordEntity();
         recordEntity.setName(ViewUtils.getTextViewString(this,R.id.tv_name));
         recordEntity.setSex(ViewUtils.getTextViewString(this,R.id.tv_sex));
@@ -430,14 +458,14 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         recordEntity.setVisitUnit(ViewUtils.getTextViewString(this,R.id.edt_unit));
         if(StringUtil.isEmpty(recordEntity.getVisitUnit())){
             DXToast.show("请填写来访单位");
-            return;
+            return null;
         }
         recordEntity.setVisitContract(ViewUtils.getTextViewString(this,R.id.edt_contractway));
         recordEntity.setVisitCarnum(ViewUtils.getTextViewString(this,R.id.edt_carnum));
         recordEntity.setBeVisited(ViewUtils.getTextViewString(this,R.id.edt_visiteto));
         if(StringUtil.isEmpty(recordEntity.getBeVisited())){
             DXToast.show("请填写被访人");
-            return;
+            return null;
         }
         String visitReson = "";
         if(spinner_reson.getSelectedItemPosition() == 4){
@@ -448,21 +476,15 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         recordEntity.setVisitReson(visitReson);
         if(StringUtil.isEmpty(recordEntity.getVisitReson())){
             DXToast.show("请填写访问理由");
-            return;
+            return null;
         }
 
         if(img_sign.getTag() == null || StringUtil.isEmpty(img_sign.getTag().toString())){
             DXToast.show("请来访者签名确认！");
-            return;
+            return null;
         }
         recordEntity.setVisitSign(img_sign.getTag().toString());
-        //保存录入信息
-        long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
-        //跳转到打印页面
-        //Intent intent = new Intent(this,PrintBillActivity.class);
-        Intent intent = new Intent(this,GprinterMainActivity.class);
-        intent.putExtra(IActionIntent.INTENTEXTRA_RECORDID,newID);
-        startActivity(intent);
-    }
 
+        return recordEntity;
+    }
 }
