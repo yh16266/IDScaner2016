@@ -48,11 +48,35 @@ public class GpringterHelper {
         return INSTANCE;
     }
 
+    public GpService getGpService(Activity mContext){
+        if(mGpService == null){
+            connection(mContext);
+        }
+        return mGpService;
+    }
+
+    public GpService getGpService(){
+        return mGpService;
+    }
+
+    public void startService(Activity mContext) {
+        Intent i= new Intent(mContext, GpPrintService.class);
+        mContext.startService(i);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void connection(Activity mContext) {
         conn = new PrinterServiceConnection();
         Intent intent = new Intent("com.gprinter.aidl.GpPrintService");
         mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE); // bindService
+    }
+
+    public boolean isConnected(){
+        return conn != null;
     }
 
     public boolean[] getConnectState() {
@@ -93,9 +117,13 @@ public class GpringterHelper {
     }
 
     public boolean getPrinterConnectStatusClicked() {
+        return getPrinterConnectStatus(0);
+    }
+
+    public boolean getPrinterConnectStatus(int printerId) {
         boolean statuRst = false;
         try {
-            int status = mGpService.getPrinterConnectStatus(0);
+            int status = mGpService.getPrinterConnectStatus(printerId);
             String str = new String();
             if (status == GpDevice.STATE_CONNECTED) {
                 str = "打印机已连接";
@@ -149,7 +177,7 @@ public class GpringterHelper {
 
     public void openPortDialogueClicked(Activity mContext) {
         Log.d(DEBUG_TAG, "openPortConfigurationDialog ");
-        Intent intent = new Intent(mContext,PrinterConnectDialog.class);
+        Intent intent = new Intent(mContext,GPrinterConnectDialog.class);
         boolean[] state = getConnectState();
         intent.putExtra(CONNECT_STATUS, state);
         mContext.startActivity(intent);

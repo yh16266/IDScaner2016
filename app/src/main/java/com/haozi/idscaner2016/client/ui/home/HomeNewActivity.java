@@ -45,6 +45,7 @@ import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.IActionIntent;
+import com.haozi.idscaner2016.gpringter.GPrinterConnectDialog;
 import com.haozi.idscaner2016.gpringter.GpringterHelper;
 import com.haozi.idscaner2016.zxingscan.utils.Constant;
 import com.routon.idr.idrinterface.readcard.IReadCardService;
@@ -80,6 +81,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
+        GpringterHelper.getInstance().startService(this);
         GpringterHelper.getInstance().connection(this);
     }
 
@@ -421,20 +423,20 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     }
 
     private void printAndSaveVisitInfo(){
-        //保存访客信息
-        VisitRecordEntity recordEntity = refershRecordInfo();
-        if(recordEntity == null){
-            return;
-        }
+        //Intent intent = new Intent(this,GprinterMainActivity.class);
+        //startActivity(intent);
+//        //保存访客信息
+//        VisitRecordEntity recordEntity = refershRecordInfo();
+//        if(recordEntity == null){
+//            return;
+//        }
         //保存录入信息
-        long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+        //long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+        long newID = 0;
         //跳转到打印页面
         boolean isConnected = GpringterHelper.getInstance().getPrinterConnectStatusClicked();
         if(isConnected == false){
-            Intent intent = new Intent(this,PrinterConnectDialog.class);
-            boolean[] state = GpringterHelper.getInstance().getConnectState();
-            intent.putExtra(GpringterHelper.CONNECT_STATUS, state);
-            this.startActivity(intent);
+            GpringterHelper.getInstance().openPortDialogueClicked(this);
         }else{
             boolean printerStatu = GpringterHelper.getInstance().getPrinterStatusClicked();
             if(printerStatu == true){

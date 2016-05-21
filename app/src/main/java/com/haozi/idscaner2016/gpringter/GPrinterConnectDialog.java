@@ -1,21 +1,13 @@
-package com.gprinter.printer;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package com.haozi.idscaner2016.gpringter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
@@ -27,15 +19,23 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.gprinter.aidl.GpService;
 import com.gprinter.command.GpCom;
 import com.gprinter.io.GpDevice;
 import com.gprinter.io.PortParameters;
+import com.gprinter.printer.GprinterMainActivity;
+import com.gprinter.printer.ListViewAdapter;
+import com.gprinter.printer.PortConfigurationActivity;
 import com.gprinter.save.PortParamDataBase;
 import com.gprinter.service.GpPrintService;
 import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.control.DXToast;
 
-public class PrinterConnectDialog extends Activity {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class GPrinterConnectDialog extends Activity {
 	private final static String DEBUG_TAG = "SamleApp";
 	public static final String ACTION_CONNECT_STATUS = "action.connect.status";
 	private static final int INTENT_PORT_SETTINGS = 0;
@@ -43,8 +43,7 @@ public class PrinterConnectDialog extends Activity {
 	private List<Map<String, Object>> mList = null;
 	private PortParameters mPortParam[] = new PortParameters[GpPrintService.MAX_PRINTER_CNT];
 	private int mPrinterId = 0;
-	private GpService mGpService;
-	private PrinterServiceConnection conn = null;
+
 	public class PrinterSeial {
 		static final int GPIRNTER001 = 0;
 		static final int GPIRNTER002 = 1;
@@ -54,31 +53,11 @@ public class PrinterConnectDialog extends Activity {
 		static final int GPIRNTER006 = 5;
 	}
 
-	class PrinterServiceConnection implements ServiceConnection {
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-
-			Log.i(DEBUG_TAG, "onServiceDisconnected() called");
-			mGpService = null;
-		}
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mGpService =GpService.Stub.asInterface(service);
-		}
-	};
-
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.e(DEBUG_TAG, "onResume");
-	}
-
-	private void connection() {
-		conn = new PrinterServiceConnection();
-		Log.i(DEBUG_TAG, "connection");
-		Intent intent = new Intent("com.gprinter.aidl.GpPrintService");
-		bindService(intent, conn, Context.BIND_AUTO_CREATE); // bindService
 	}
 
 	@Override
@@ -90,8 +69,12 @@ public class PrinterConnectDialog extends Activity {
 		initPortParam();
 		initView();
 		registerBroadcast();
-		connection();	
+		if(!GpringterHelper.getInstance().isConnected()){
+			DXToast.show("请打开连接以后再进行设置");
+			finish();
+		}
 	}
+
 	private void initPortParam() {
 		Intent intent = getIntent();
 		boolean[] state = intent
@@ -109,9 +92,6 @@ public class PrinterConnectDialog extends Activity {
 		Log.e(DEBUG_TAG, "onDestroy ");
 		super.onDestroy();
 		this.unregisterReceiver(PrinterStatusBroadcastReceiver);
-		if (conn != null) {
-			unbindService(conn); // unBindService
-		}
 	}
 
 	private void initView() {
@@ -168,7 +148,8 @@ public class PrinterConnectDialog extends Activity {
 				} else if (type == GpDevice.STATE_INVALID_PRINTER) {
 					setProgressBarIndeterminateVisibility(false);
 					SetLinkButtonEnable(ListViewAdapter.ENABLE);
-					messageBox("Please use Gprinter!");
+					GpringterHelper.getInstance().getPrinterConnectStatus(id);
+					messageBox("请使用有效的Gprinter!");
 				}
 			}
 		}
@@ -262,7 +243,7 @@ public class PrinterConnectDialog extends Activity {
 				long arg3) {
 			// TODO Auto-generated method stub]
 			mPrinterId = arg2;
-			Intent intent = new Intent(PrinterConnectDialog.this,PortConfigurationActivity.class);
+			Intent intent = new Intent(GPrinterConnectDialog.this,PortConfigurationActivity.class);
 			startActivityForResult(intent, INTENT_PORT_SETTINGS);
 		}
 	}
@@ -275,7 +256,8 @@ public class PrinterConnectDialog extends Activity {
 				   switch(mPortParam[PrinterId].getPortType()){
 				   case  PortParameters.USB:
 					   try {
-						rel = mGpService.openPort(PrinterId, mPortParam[PrinterId].getPortType(), mPortParam[PrinterId].getUsbDeviceName(), 0);
+						rel = GpringterHelper.getInstance().getGpService()
+								.openPort(PrinterId, mPortParam[PrinterId].getPortType(), mPortParam[PrinterId].getUsbDeviceName(), 0);
 					   } catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -283,7 +265,8 @@ public class PrinterConnectDialog extends Activity {
 					  break;
 				   case PortParameters.ETHERNET:
 					   try {
-						rel = mGpService.openPort(PrinterId, mPortParam[PrinterId].getPortType(), mPortParam[PrinterId].getIpAddr(), mPortParam[PrinterId].getPortNumber());
+						rel = GpringterHelper.getInstance().getGpService()
+								.openPort(PrinterId, mPortParam[PrinterId].getPortType(), mPortParam[PrinterId].getIpAddr(), mPortParam[PrinterId].getPortNumber());
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -291,7 +274,8 @@ public class PrinterConnectDialog extends Activity {
 					   break;
 				   case PortParameters.BLUETOOTH:
 					   try {
-						rel = mGpService.openPort(PrinterId, mPortParam[PrinterId].getPortType(), mPortParam[PrinterId].getBluetoothAddr(), 0);
+						rel = GpringterHelper.getInstance().getGpService()
+								.openPort(PrinterId, mPortParam[PrinterId].getPortType(), mPortParam[PrinterId].getBluetoothAddr(), 0);
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -325,7 +309,8 @@ public class PrinterConnectDialog extends Activity {
 			mList.set(PrinterId, map);
 			mListViewAdapter.notifyDataSetChanged();
 		    try {
-					mGpService.closePort(PrinterId);} 
+				GpringterHelper.getInstance().getGpService()
+						.closePort(PrinterId);}
 		    	catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
