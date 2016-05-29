@@ -112,22 +112,46 @@
             android:clickable="true"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/service_register_rescan"
+        <LinearLayout
+            android:id="@+id/lin_opration"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/rescan_shape_button"
-            android:padding="10dp"
-            android:text="再次扫描"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/qrcode_g_gallery"
-            android:visibility="visible"
             android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true">
 
-            />
+            <Button
+                android:id="@+id/service_register_rescan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/rescan_shape_button"
+                android:padding="10dp"
+                android:text="再次扫描"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_centerHorizontal="true"
+                android:visibility="visible"/>
+
+            <Button
+                android:id="@+id/service_register_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="110dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/confirm_shape_button"
+                android:layout_marginLeft="40dp"
+                android:padding="10dp"
+                android:text="确认"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:layout_centerHorizontal="true"
+                android:visibility="visible"/>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <!-- 扫描框中间的布局 -->

@@ -353,8 +353,12 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		if(!StringUtil.isEmpty(carnum)){
 			whereBf.append(" and ").append(Table.VISIT_CARNUM).append(" like '%").append(carnum).append("%'");
 		}
-		//排序分页
-		whereBf.append(" order by ").append(Table.VISIT_TIME).append(" desc limit ").append(PAGE_SIZE).append(" offset ").append((index-1)*PAGE_SIZE);
+		//排序
+		whereBf.append(" order by ").append(Table.VISIT_TIME).append(" desc ");
+		//分页
+		if(index >= 0){
+			whereBf.append(" limit ").append(PAGE_SIZE).append(" offset ").append((index-1)*PAGE_SIZE);
+		}
 
 		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), whereBf.toString());
 		if(csr != null) {

@@ -6,9 +6,16 @@ import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.common.base.BaseObject;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
+import com.haozi.idscaner2016.constants.IConstants;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -115,5 +122,70 @@ public class VisitRecordHelper extends BaseObject {
 
     public VisitRecordEntity getRecordByIdNum(String mIdNum) {
         return VisitRecordTable.getInstance().getRecord(mIdNum);
+    }
+
+    /**
+     * 追加文件：使用FileOutputStream，在构造FileOutputStream时，把第二个参数设为true
+     * @param fileName
+     * @param content
+     */
+    public void writeStrToFile(String fileName, String content) {
+        BufferedWriter out = null;
+        try {
+            out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(fileName, true)));
+            out.write(content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void outputRecord(List<VisitRecordEntity> list){
+        BufferedWriter out = null;
+        try {
+            String ymdStr = DateUtil.convertDateToYMDShort(System.currentTimeMillis());
+            File file = new File(IConstants.PROJECT_IMAGE_DIR + File.separator + ymdStr);
+            if(!file.exists()) {
+                file.mkdirs();
+            }
+            String signFilePath = IConstants.PROJECT_IMAGE_DIR + File.separator + ymdStr +"_output.txt";
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(signFilePath, true)));
+            for(VisitRecordEntity item:list){
+                if(item == null){
+                    continue;
+                }
+                String content = getRecrodStr(item);
+                out.write(content);
+                out.newLine();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public String getRecrodStr(VisitRecordEntity recordEntity){
+        StringBuffer rst = new StringBuffer();
+        rst.append(recordEntity.getName()).append(",");
+        rst.append(recordEntity.getIdNum()).append(",");
+        rst.append(DateUtil.convertDateYYYYMMddHHmm(recordEntity.getVisitTime())).append(",");
+        rst.append(recordEntity.getVisitUnit()).append(",");
+        rst.append(recordEntity.getVisitContract()).append(",");
+        rst.append(recordEntity.getVisitCarnum()).append(",");
+        rst.append(recordEntity.getBeVisited()).append(",");
+        rst.append(recordEntity.getVisitReson()).append("");
+        return rst.toString();
     }
 }

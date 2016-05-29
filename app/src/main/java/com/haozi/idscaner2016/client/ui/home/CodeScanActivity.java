@@ -28,11 +28,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.control.DXToast;
+import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.zxingscan.utils.Constant;
 import com.haozi.idscaner2016.zxingscan.zxing.ScanListener;
 import com.haozi.idscaner2016.zxingscan.zxing.ScanManager;
@@ -58,7 +61,9 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
     TextView qrcode_ic_back;
     final int PHOTOREQUESTCODE = 1111;
 
+    LinearLayout lin_opration;
     Button rescan;
+    Button confirm;
     ImageView scan_image;
     ImageView authorize_return;
     //扫描模型（条形，二维码，全部）
@@ -67,6 +72,7 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
     TextView title;
     TextView scan_hint;
     TextView tv_scan_result;
+    String scanRst;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -80,7 +86,9 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
     }
 
     private void initView() {
+        lin_opration = (LinearLayout) findViewById(R.id.lin_opration);
         rescan = (Button) findViewById(R.id.service_register_rescan);
+        confirm = (Button) findViewById(R.id.service_register_confirm);
         scan_image = (ImageView) findViewById(R.id.scan_image);
         authorize_return = (ImageView) findViewById(R.id.authorize_return);
         title = (TextView) findViewById(R.id.common_title_TV_center);
@@ -111,6 +119,7 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
         iv_light = (TextView) findViewById(R.id.iv_light);
         iv_light.setOnClickListener(this);
         rescan.setOnClickListener(this);
+        confirm.setOnClickListener(this);
         authorize_return.setOnClickListener(this);
         //构造出扫描管理器
         scanManager = new ScanManager(this, scanPreview, scanContainer, scanCropView, scanLine, scanMode, this);
@@ -120,7 +129,7 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
     public void onResume() {
         super.onResume();
         scanManager.onResume();
-        rescan.setVisibility(View.INVISIBLE);
+        lin_opration.setVisibility(View.INVISIBLE);
         scan_image.setVisibility(View.GONE);
     }
 
@@ -139,7 +148,7 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
 //		Toast.makeText(that, "result="+rawResult.getText(), Toast.LENGTH_LONG).show();
         if (!scanManager.isScanning()) { //如果当前不是在扫描状态
             //设置再次扫描按钮出现
-            rescan.setVisibility(View.VISIBLE);
+            lin_opration.setVisibility(View.VISIBLE);
             scan_image.setVisibility(View.VISIBLE);
             Bitmap barcode = null;
             byte[] compressedBitmap = bundle.getByteArray(DecodeThread.BARCODE_BITMAP);
@@ -149,15 +158,16 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
             }
             scan_image.setImageBitmap(barcode);
         }
-        rescan.setVisibility(View.VISIBLE);
+        lin_opration.setVisibility(View.VISIBLE);
         scan_image.setVisibility(View.VISIBLE);
         tv_scan_result.setVisibility(View.VISIBLE);
+        scanRst = rawResult.getText();
         tv_scan_result.setText("结果：" + rawResult.getText());
     }
 
     void startScan() {
         if (rescan.getVisibility() == View.VISIBLE) {
-            rescan.setVisibility(View.INVISIBLE);
+            lin_opration.setVisibility(View.INVISIBLE);
             scan_image.setVisibility(View.GONE);
             scanManager.reScan();
         }
@@ -213,6 +223,13 @@ public final class CodeScanActivity extends Activity implements ScanListener, Vi
                 break;
             case R.id.service_register_rescan://再次开启扫描
                 startScan();
+                break;
+            case R.id.service_register_confirm:
+                if(StringUtil.isEmpty(scanRst)){
+                    DXToast.show("请扫描以后再执行该操作");
+                    return;
+                }
+                LeaveConfirmDialog.showByCheckCode(CodeScanActivity.this,scanRst);
                 break;
             case R.id.authorize_return:
                 finish();

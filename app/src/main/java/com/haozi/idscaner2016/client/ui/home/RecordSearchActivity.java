@@ -7,6 +7,8 @@ import android.widget.ListView;
 
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
+import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
+import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
@@ -40,6 +42,7 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
         });
         findViewById(R.id.btn_search).setOnClickListener(this);
         findViewById(R.id.btn_clean).setOnClickListener(this);
+        findViewById(R.id.btn_output).setOnClickListener(this);
         initListview(R.id.listView,new RecordListViewAdapter(this));
     }
 
@@ -56,6 +59,8 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
                 ViewUtils.setEditTextTxt(this,R.id.edt_visitorname,"");
                 ViewUtils.setEditTextTxt(this,R.id.edt_bevisited,"");
                 ViewUtils.setEditTextTxt(this,R.id.edt_carnum,"");
+                break;
+            case R.id.btn_output:
                 break;
         }
     }
@@ -82,6 +87,25 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
         }else{
             mAdapter.addDataList(list);
         }
+    }
+
+    private void outputRecord(){
+        showProgress("查询数据中...");
+        String date = ViewUtils.getEditString(this,R.id.edt_visittime);
+        String idnum = ViewUtils.getEditString(this,R.id.edt_idnum);
+        String visitorname = ViewUtils.getEditString(this,R.id.edt_visitorname);
+        String bevisited = ViewUtils.getEditString(this,R.id.edt_bevisited);
+        String carnum = ViewUtils.getEditString(this,R.id.edt_carnum);
+        List<VisitRecordEntity> list = VisitRecordTable.getInstance()
+                .getRecordList(date,idnum,visitorname,bevisited,carnum,-1);
+        if(list == null || list.size() == 0){
+            dismissProgress();
+            DXToast.show("没有可到处数据");
+            return;
+        }
+        showProgress("导出数据中...");
+        VisitRecordHelper.getInstance().outputRecord(list);
+        dismissProgress();
     }
 
     @Override

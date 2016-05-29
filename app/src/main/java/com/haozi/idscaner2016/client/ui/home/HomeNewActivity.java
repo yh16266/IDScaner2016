@@ -183,10 +183,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 cleanVisitInfo(true);
                 break;
             case R.id.btn_leve:
-                Intent intent = new Intent(this,CodeScanActivity.class);
-                //intent.putExtra(Constant.REQUEST_SCAN_MODE, Constant.REQUEST_SCAN_MODE_BARCODE_MODE);
-                startActivity(intent);
-                //LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
+                showLeaveDailog();
                 break;
             case R.id.btn_print:
                 printAndSaveVisitInfo();
@@ -488,5 +485,47 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         recordEntity.setVisitSign(img_sign.getTag().toString());
 
         return recordEntity;
+    }
+
+    private void showLeaveDailog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("签离方式");
+        builder.setNegativeButton("手动签离", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    showInputCheckCodeDailog();
+                }
+            });
+        builder.setPositiveButton("扫描签离", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(HomeNewActivity.this,CodeScanActivity.class);
+                    //intent.putExtra(Constant.REQUEST_SCAN_MODE, Constant.REQUEST_SCAN_MODE_BARCODE_MODE);
+                    startActivity(intent);
+                    //LeaveConfirmDialog.showByIdNum(this,"510622198709084211");
+                }
+            });
+        builder.create().show();
+    }
+
+    private void showInputCheckCodeDailog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("请输入检查码");
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        final EditText edit = new EditText(this);
+        builder.setView(edit);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(edit.getText() == null || StringUtil.isEmpty(edit.getText().toString())){
+                    DXToast.show("代码不能为空，签离失败");
+                }else{
+                    String checkCode = edit.getText().toString();
+                    LeaveConfirmDialog.showByCheckCode(HomeNewActivity.this,checkCode);
+                }
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
     }
 }

@@ -31,7 +31,7 @@ import com.routon.idr.idrinterface.readcard.ReadType;
 import com.routon.idr.idrinterface.readcard.ReaderBean;
 import com.routon.idrconst.Action;
 
-public class HomeActivity extends BaseCompatActivity implements ReadCardServiceCallback {
+    public class HomeActivity extends BaseCompatActivity implements ReadCardServiceCallback {
 
     private ReadState mClientState = ReadState.st_unknown;
     private static final int ROLL_INTERVAL = 20;  //滚动执行间隔时间 20ms
