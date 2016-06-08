@@ -24,5 +24,11 @@
         android:icon="@android:drawable/ic_menu_compass"
         android:title="单位管理"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/menu_printer_setting"
+        android:orderInCategory="80"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="打印机设置"
+        app:showAsAction="ifRoom"/>
 
 </menu>

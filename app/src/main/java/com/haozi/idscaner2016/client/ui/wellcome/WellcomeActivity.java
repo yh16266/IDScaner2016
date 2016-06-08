@@ -81,7 +81,7 @@ public class WellcomeActivity extends BaseCompatActivity {
 			DXToast.show("账号或者密码错误，登陆失败");
 		}else{
 			DXToast.show("登陆成功");
-			AccountHelper.getInstance().putMyInfo(rst);
+			AccountHelper.getInstance().LoginOn(rst);
 			gotoMain();
 		}
 	}

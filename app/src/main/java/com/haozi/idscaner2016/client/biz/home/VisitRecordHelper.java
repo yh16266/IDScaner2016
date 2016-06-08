@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -150,25 +151,26 @@ public class VisitRecordHelper extends BaseObject {
         BufferedWriter out = null;
         try {
             String ymdStr = DateUtil.convertDateToYMDShort(System.currentTimeMillis());
-            File file = new File(IConstants.PROJECT_IMAGE_DIR + File.separator + ymdStr);
+            File file = new File(IConstants.PROJECT_DIR + File.separator);
             if(!file.exists()) {
                 file.mkdirs();
             }
-            String signFilePath = IConstants.PROJECT_IMAGE_DIR + File.separator + ymdStr +"_output.txt";
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(signFilePath, true)));
+            String signFilePath = IConstants.PROJECT_DIR + File.separator + ymdStr +"_output.txt";
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(signFilePath, true), "gbk"));
             for(VisitRecordEntity item:list){
                 if(item == null){
                     continue;
                 }
                 String content = getRecrodStr(item);
                 out.write(content);
-                out.newLine();
+                out.write("\n");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
+                out.flush();
                 out.close();
             } catch (IOException e) {
                 e.printStackTrace();

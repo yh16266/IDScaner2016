@@ -3,13 +3,10 @@ package com.haozi.idscaner2016.client.ui.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.RemoteException;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,17 +21,12 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.gprinter.printer.GprinterMainActivity;
-import com.gprinter.printer.PrinterConnectDialog;
+import com.android.print.PrinterSettingActivity;
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
-import com.haozi.idscaner2016.client.biz.cardread.ClientBCReceiver;
 import com.haozi.idscaner2016.client.biz.cardread.MainMsg;
-import com.haozi.idscaner2016.client.biz.cardread.ReadCardServiceCallback;
-import com.haozi.idscaner2016.client.biz.cardread.ReadCardSound;
 import com.haozi.idscaner2016.client.biz.cardread.ReadInfoCallback;
-import com.haozi.idscaner2016.client.biz.cardread.ReadServiceConnection;
 import com.haozi.idscaner2016.client.biz.home.HomeCardReadHelper;
 import com.haozi.idscaner2016.client.biz.home.UnityManageHelper;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
@@ -44,16 +36,8 @@ import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
-import com.haozi.idscaner2016.constants.IActionIntent;
-import com.haozi.idscaner2016.gpringter.GPrinterConnectDialog;
-import com.haozi.idscaner2016.gpringter.GpringterHelper;
-import com.haozi.idscaner2016.zxingscan.utils.Constant;
-import com.routon.idr.idrinterface.readcard.IReadCardService;
-import com.routon.idr.idrinterface.readcard.ReadMode;
-import com.routon.idr.idrinterface.readcard.ReadState;
+import com.haozi.idscaner2016.printer.PrinterHelper;
 import com.routon.idr.idrinterface.readcard.ReadType;
-import com.routon.idr.idrinterface.readcard.ReaderBean;
-import com.routon.idrconst.Action;
 
 import java.io.File;
 
@@ -81,8 +65,6 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
-        GpringterHelper.getInstance().startService(this);
-        GpringterHelper.getInstance().connection(this);
     }
 
     @Override
@@ -150,6 +132,10 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 break;
             case R.id.menu_unit:
                 intent = new Intent(this,UnitManageActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_printer_setting:
+                intent = new Intent(this,PrinterSettingActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -230,7 +216,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         super.onDestroy();
         HomeCardReadHelper.getInstance().unRegister(this);
         HomeCardReadHelper.getInstance().unbindReadCardService(this);
-        GpringterHelper.getInstance().unBindConnection(this);
+        PrinterHelper.getInstance().unBindConnection();
         Log.d(TAG,"onDestroy");
     }
 
@@ -399,6 +385,9 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             }else if(adapterView==spinner_reson){
                 Log.d(TAG,"spinner_reson");
                 TextView tv = (TextView)view;
+                if(tv == null){
+                    return;
+                }
                 //设置颜色
                 tv.setTextColor(getResources().getColor(R.color.white));
                 //设置大小
@@ -431,15 +420,14 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         //long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
         long newID = 0;
         //跳转到打印页面
-        boolean isConnected = GpringterHelper.getInstance().getPrinterConnectStatusClicked();
+        boolean isConnected = PrinterHelper.getInstance().isPrinterConnected();
         if(isConnected == false){
-            GpringterHelper.getInstance().openPortDialogueClicked(this);
+            //PrinterHelper.getInstance().openConn(this);
+            Intent intent = new Intent(this,PrinterSettingActivity.class);
+            startActivity(intent);
         }else{
-            boolean printerStatu = GpringterHelper.getInstance().getPrinterStatusClicked();
-            if(printerStatu == true){
-                String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
-                GpringterHelper.getInstance().sendReceipt();
-            }
+            String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
+            PrinterHelper.getInstance().printVisitCard(checkCode);
         }
     }
 
@@ -528,4 +516,10 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         builder.setNegativeButton("取消", null);
         builder.show();
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        PrinterHelper.getInstance().onActivityResult(this,requestCode, resultCode, data);
+//    }
 }

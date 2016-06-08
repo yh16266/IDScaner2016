@@ -101,88 +101,18 @@
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
 
-        <activity
-            android:name=".gpringter.GPrinterConnectDialog"
-            android:label="@string/port_configuration"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
-            android:configChanges="keyboardHidden|orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
-            </intent-filter>
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_DETACHED"
-                android:resource="@xml/device_filter" />
-        </activity>
-
         <!--蓝牙打印机-->
         <activity
-            android:name="com.gprinter.printer.GprinterMainActivity"
+            android:name="com.android.print.BluetoothDeviceList"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.android.print.PrinterSettingActivity"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
-        <!-- 端口设置对话 -->
-        <activity
-            android:name="com.gprinter.printer.PrinterConnectDialog"
-            android:label="@string/port_configuration"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
-            android:configChanges="keyboardHidden|orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
-            </intent-filter>
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter" />
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_DETACHED"
-                android:resource="@xml/device_filter" />
-        </activity>
-        <!-- 蓝牙设备 -->
-        <activity
-            android:name="com.gprinter.printer.BluetoothDeviceList"
-            android:label="@string/bluetooth_device_list"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
-            android:configChanges="keyboardHidden|orientation|screenSize">
-        </activity>
-        <!-- 端口设置对话 -->
-        <activity
-            android:name="com.gprinter.printer.PortConfigurationActivity"
-            android:label="@string/port_configuration"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
-        </activity>
-        <!-- USB设备 -->
-        <activity
-            android:name="com.gprinter.printer.UsbDeviceList"
-            android:label="@string/usb_devices_list"
-            android:theme="@android:style/Theme.Holo.Light.Dialog"
-            android:configChanges="keyboardHidden|orientation|screenSize"  >
-        </activity>
-
-        <receiver android:name="com.gprinter.printer.DeviceBootReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.gprinter.service.GpPrintService"
-            android:label="GpPrintService"
-            android:process=":remote"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.gprinter.aidl.GpPrintService" />
-            </intent-filter>
-        </service>
 
     </application>
 

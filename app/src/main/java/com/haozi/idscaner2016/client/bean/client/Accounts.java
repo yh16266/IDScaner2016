@@ -1,6 +1,7 @@
 package com.haozi.idscaner2016.client.bean.client;
 
 import com.haozi.idscaner2016.client.bean.BaseEntity;
+import com.haozi.idscaner2016.client.bean.EntityDitionary;
 
 import java.math.BigDecimal;
 
@@ -88,6 +89,10 @@ public class Accounts extends BaseEntity {
 
 	public String getUserType() {
 		return userType;
+	}
+
+	public EntityDitionary.UserType UserType() {
+		return EntityDitionary.UserType.ValueOf(userType);
 	}
 
 	public void setUserType(String userType) {

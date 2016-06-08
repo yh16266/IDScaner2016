@@ -3,6 +3,8 @@
  */
 package com.haozi.idscaner2016.client.bean;
 
+import com.haozi.idscaner2016.common.utils.StringUtil;
+
 /**
  * 类名：EntityDitionary
  * @author yinhao
@@ -35,6 +37,29 @@ public class EntityDitionary {
     	public String getValueStr(){
     		return String.valueOf(mValue);
     	}
+
+		public static UserType ValueOf(String valueStr) {
+			if(StringUtil.isEmpty(valueStr)){
+				return null;
+			}
+			int value = Integer.valueOf(valueStr);
+			return  ValueOf(value);
+		}
+
+		public static UserType ValueOf(int value) {
+			//获取所有枚举
+			UserType[] arr = UserType.values();
+			if(arr == null || arr.length == 0){
+				return null;
+			}
+			//遍历获取数据
+			for(UserType type : arr){
+				if(type.mValue == value){
+					return type;
+				}
+			}
+			return null;
+		}
     }
 
 	/**字典类型*/

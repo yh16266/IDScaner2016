@@ -326,7 +326,7 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
 		//日期范围
 		if(!StringUtil.isEmpty(dateStr)){
 			Date date = DateUtil.StrYYYYMMMDDToDate(dateStr);
-			if(date != null){
+			if(date != null && !StringUtil.isEmpty(dateStr)){
 				GregorianCalendar curdar = new GregorianCalendar(Locale.getDefault());
 				curdar.setTimeInMillis(date.getTime());
 				GregorianCalendar todayDarStart = new GregorianCalendar(

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.haozi.idscaner2016.client.ui.home.HomeNewActivity">
+
+    <item
+        android:id="@+id/menu_output"
+        android:orderInCategory="80"
+        android:icon="@android:drawable/ic_menu_directions"
+        android:title="导出"
+        app:showAsAction="ifRoom"/>
+
+</menu>

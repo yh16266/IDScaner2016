@@ -81,7 +81,7 @@ public class BasePersistedHelper {
 	}
 
 	public long getLong(String key) {
-		return mDB.getLong(key, -1);
+ 		return mDB.getLong(key, -1);
 	}
 
 	public boolean getBoolean(String key) {

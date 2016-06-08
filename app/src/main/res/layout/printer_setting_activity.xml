@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:background="@drawable/btn_blue_selector_xml"
+        android:clickable="true"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:text="打开蓝牙连接"
+        android:textColor="@color/white"
+        android:textSize="24sp" />
+
+    <TableLayout
+        android:id="@+id/tab1"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:stretchColumns="1,2" >
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_vertical"
+                android:text="@string/choose_printer_type"
+                android:textColor="#000" />
+
+            <RadioButton
+                android:id="@+id/type_remin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/printer_type_remin"
+                android:textColor="#000" />
+
+            <RadioButton
+                android:id="@+id/type_styuls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/printer_type_styuls"
+                android:enabled="false"
+                android:textColor="#000" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dip"
+                android:gravity="center_vertical"
+                android:text="@string/choose_paper_width"
+                android:textColor="#000" />
+
+            <RadioButton
+                android:id="@+id/width_58mm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="58mm"
+                android:textColor="#000" />
+
+            <RadioButton
+                android:id="@+id/width_80mm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="80mm"
+                android:textColor="#000" />
+
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

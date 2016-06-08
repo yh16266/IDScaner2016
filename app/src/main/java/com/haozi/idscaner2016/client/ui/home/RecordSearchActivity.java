@@ -1,21 +1,34 @@
 package com.haozi.idscaner2016.client.ui.home;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.bean.EntityDitionary;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXToast;
+import com.haozi.idscaner2016.client.data.AccountHelper;
 import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.base.PullRefreshAcitivity;
+import com.haozi.idscaner2016.common.utils.DateUtil;
+import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.IConstants;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Haozi on 2016/5/2.
@@ -23,6 +36,8 @@ import java.util.List;
 public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity> {
 
     private ListView listView;
+    private TextView edt_visittime;
+    private DatePickerDialog mDatePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +48,11 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
     @Override
     protected void initView() {
         initToolbar("搜索");
+        edt_visittime = (TextView) findViewById(R.id.edt_visittime);
+        if(EntityDitionary.UserType.admin != AccountHelper.getInstance().getMyinfo().UserType()) {
+            edt_visittime.setText(DateUtil.convertDateyyyyMMdd(System.currentTimeMillis()));
+        }
+        edt_visittime.setOnClickListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,13 +74,19 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
                 searchRecord();
                 break;
             case R.id.btn_clean:
-                ViewUtils.setTextViewTxt(this,R.id.edt_visittime,"");
+                if(EntityDitionary.UserType.admin == AccountHelper.getInstance().getMyinfo().UserType()){
+                    ViewUtils.setTextViewTxt(this,R.id.edt_visittime,"");
+                }
                 ViewUtils.setEditTextTxt(this,R.id.edt_idnum,"");
                 ViewUtils.setEditTextTxt(this,R.id.edt_visitorname,"");
                 ViewUtils.setEditTextTxt(this,R.id.edt_bevisited,"");
                 ViewUtils.setEditTextTxt(this,R.id.edt_carnum,"");
                 break;
             case R.id.btn_output:
+
+                break;
+            case R.id.edt_visittime:
+                showDatePicker();
                 break;
         }
     }
@@ -71,7 +97,7 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
 
     @Override
     protected void refreshListView(int index) {
-        String date = ViewUtils.getEditString(this,R.id.edt_visittime);
+        String date = ViewUtils.getTextViewString(this,R.id.edt_visittime);
         String idnum = ViewUtils.getEditString(this,R.id.edt_idnum);
         String visitorname = ViewUtils.getEditString(this,R.id.edt_visitorname);
         String bevisited = ViewUtils.getEditString(this,R.id.edt_bevisited);
@@ -100,16 +126,63 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
                 .getRecordList(date,idnum,visitorname,bevisited,carnum,-1);
         if(list == null || list.size() == 0){
             dismissProgress();
-            DXToast.show("没有可到处数据");
+            DXToast.show("没有可导出数据");
             return;
         }
         showProgress("导出数据中...");
         VisitRecordHelper.getInstance().outputRecord(list);
         dismissProgress();
+        DXToast.show("导出成功");
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.record_search_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_output:
+                outputRecord();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private void showDatePicker(){
+        Calendar nowCalendar=Calendar.getInstance(Locale.CHINA);
+        final String dateStr = ViewUtils.getTextViewString(edt_visittime);
+        if(StringUtil.isEmpty(dateStr) && dateStr.length() == 10){
+            Date date = DateUtil.StrYYYYMMMDDToDate(dateStr);
+            nowCalendar.setTime(date);
+        }
+        if(mDatePicker == null){
+            //创建DatePickerDialog对象
+            mDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                    String monthStr = String.valueOf(month+1);
+                    if((month+1) < 10){
+                        monthStr = "0"+monthStr;
+                    }
+                    String dayStr = String.valueOf(day);
+                    if(day < 10){
+                        dayStr = "0"+dayStr;
+                    }
+                    edt_visittime.setText(year+"-"+monthStr+"-"+dayStr);
+                }
+            }, nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH));
+        }
+        //显示DatePickerDialog组件
+        mDatePicker.show();
     }
 }

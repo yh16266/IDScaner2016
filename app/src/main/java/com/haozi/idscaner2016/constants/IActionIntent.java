@@ -26,6 +26,9 @@ public class IActionIntent {
 	/** 广播：SOCEKT链接通知 */
 	public static final Intent ACTION_SOCKET_CONNECTED = null;
 
+	/** 广播：打印机链接通知 */
+	public static final String ACTION_PRINTER_CONNECTEDUPDATE = "ACTION_PRINTER_CONNECTEDUPDATE";
+
 	/*-------------------------------------------------参数常量-------------------------------------------------------*/
 	
 	/** 身份证号码 */
