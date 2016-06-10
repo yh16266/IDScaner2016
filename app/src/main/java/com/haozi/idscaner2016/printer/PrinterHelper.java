@@ -11,10 +11,16 @@ import com.android.print.BluetoothOperation;
 import com.android.print.Constants;
 import com.android.print.IPrinterOpertion;
 import com.android.print.PrintUtils;
+import com.android.print.PrinterSettingActivity;
+import com.android.print.sdk.Barcode;
 import com.android.print.sdk.PrinterConstants;
 import com.android.print.sdk.PrinterInstance;
+import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
+import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.common.app.MyApp;
+import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.common.utils.SystemUtil;
 import com.haozi.idscaner2016.constants.IActionIntent;
 
@@ -119,10 +125,77 @@ public class PrinterHelper {
         return isConnected;
     }
 
+    public void printVisitCard(Context mcontext,long recordId){
+        //跳转到打印页面
+        boolean isConnected = PrinterHelper.getInstance().isPrinterConnected();
+        if(isConnected == false){
+            Intent intent = new Intent(mcontext,PrinterSettingActivity.class);
+            mcontext.startActivity(intent);
+        }else{
+            String checkCode = VisitRecordHelper.getInstance().getCheckCode(recordId);
+            PrinterHelper.getInstance().printVisitCard(checkCode);
+        }
+    }
+
     public void printVisitCard(String checkCode){
         if(mPrinter != null){
-            PrintUtils.printText(MyApp.getInstance().getResources(),mPrinter);
+            VisitRecordEntity recordEntity = VisitRecordHelper.getInstance().getRecordByCheckCode(checkCode);
+            if(recordEntity == null){
+                return;
+            }
+            mPrinter.init();
+            printVisitInfo(recordEntity);
         }
+    }
+
+    private void printVisitInfo(VisitRecordEntity recordEntity){
+
+        mPrinter.printText("来访人："+recordEntity.getName());
+        // 换行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        mPrinter.printText("身份证号："+recordEntity.getIdNum());
+        // 换行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        mPrinter.printText("来访时间："+recordEntity.getVisitTimeStr());
+        // 换行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        mPrinter.printText("来访事由："+recordEntity.getVisitReson());
+        // 换行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        mPrinter.printText("被访单位："+recordEntity.getVisitUnit());
+        // 换行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        mPrinter.printText("被访人："+recordEntity.getBeVisited());
+
+        //打印访问码
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        printQrcode(recordEntity.getCheckCode());
+    }
+
+    private void printQrcode(String checkCode){
+        if(StringUtil.isEmpty(checkCode)){
+            return;
+        }
+        // "QRCODE"
+        mPrinter.printText("签离码："+checkCode);
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+
+        mPrinter.setCharacterMultiple(0, 0);
+        /**设置左边距,nL,nH 设置宽度为(nL+nH*256)* 横向移动单位. 设置左边距对打印条码的注释位置有影响.*/
+        mPrinter.setLeftMargin(15, 0);
+        // mPrinter.setPrinter(BluetoothPrinter.COMM_ALIGN,BluetoothPrinter.COMM_ALIGN_LEFT);
+        /**
+         * 参数1: 设置条码横向宽度 2<=n<=6,默认为2 参数2: 设置条码高度 1<=n<=255,默认162 参数3:
+         * 设置条码注释打印位置.0不打印,1上方,2下方,3上下方均有,默认为0 参数4:
+         * 设置条码类型.BluetoothPrinter.BAR_CODE_TYPE_ 开头的常量,默认为CODE128
+         */
+        Barcode barcode = new Barcode(PrinterConstants.BarcodeType.QRCODE, 2, 3, 6, checkCode);
+        mPrinter.printBarCode(barcode);
+        // 换2行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 1);
+
+        //切刀
+        mPrinter.cutPaper();
     }
 
 }

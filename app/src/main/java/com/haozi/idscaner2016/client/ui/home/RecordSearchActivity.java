@@ -24,6 +24,7 @@ import com.haozi.idscaner2016.common.base.PullRefreshAcitivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.constants.IConstants;
+import com.haozi.idscaner2016.printer.PrinterHelper;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -83,7 +84,7 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
                 ViewUtils.setEditTextTxt(this,R.id.edt_carnum,"");
                 break;
             case R.id.btn_output:
-
+                outputRecord();
                 break;
             case R.id.edt_visittime:
                 showDatePicker();
@@ -136,8 +137,9 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        VisitRecordEntity entity =  mAdapter.getItemEntity(position-1);
+        PrinterHelper.getInstance().printVisitCard(this,entity.getId());
     }
 
     @Override

@@ -409,26 +409,16 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     }
 
     private void printAndSaveVisitInfo(){
-        //Intent intent = new Intent(this,GprinterMainActivity.class);
-        //startActivity(intent);
-//        //保存访客信息
-//        VisitRecordEntity recordEntity = refershRecordInfo();
-//        if(recordEntity == null){
-//            return;
-//        }
-        //保存录入信息
-        //long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
-        long newID = 0;
-        //跳转到打印页面
-        boolean isConnected = PrinterHelper.getInstance().isPrinterConnected();
-        if(isConnected == false){
-            //PrinterHelper.getInstance().openConn(this);
-            Intent intent = new Intent(this,PrinterSettingActivity.class);
-            startActivity(intent);
-        }else{
-            String checkCode = VisitRecordHelper.getInstance().getCheckCode(newID);
-            PrinterHelper.getInstance().printVisitCard(checkCode);
+        //保存访客信息
+        VisitRecordEntity recordEntity = refershRecordInfo();
+        if(recordEntity == null){
+            return;
         }
+        //保存录入信息
+        long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+        //long newID = 0;
+        //跳转到打印页面
+        PrinterHelper.getInstance().printVisitCard(this,newID);
     }
 
     private VisitRecordEntity refershRecordInfo(){

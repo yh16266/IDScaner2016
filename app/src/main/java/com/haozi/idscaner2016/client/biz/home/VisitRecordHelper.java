@@ -117,8 +117,8 @@ public class VisitRecordHelper extends BaseObject {
         return VisitRecordTable.getInstance().getRecordNotLeave(idNum);
     }
 
-    public VisitRecordEntity getRecordByCheckCode(String idNum){
-        return VisitRecordTable.getInstance().getRecord(idNum);
+    public VisitRecordEntity getRecordByCheckCode(String checkCode){
+        return VisitRecordTable.getInstance().getRecordByCheckCode(checkCode);
     }
 
     public VisitRecordEntity getRecordByIdNum(String mIdNum) {
