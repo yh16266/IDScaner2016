@@ -50,7 +50,7 @@ public class WellcomeActivity extends BaseCompatActivity {
 		if(!StringUtil.isEmpty(lastAccount)){
 			ViewUtils.setEditTextTxt(this,R.id.edt_username,lastAccount);
 		}
-		ViewUtils.setEditTextTxt(this,R.id.edt_password,"admin2016");
+		//ViewUtils.setEditTextTxt(this,R.id.edt_password,"admin2016");
 	}
 
 	@Override

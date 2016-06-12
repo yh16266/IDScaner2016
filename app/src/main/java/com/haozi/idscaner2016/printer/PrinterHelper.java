@@ -125,13 +125,29 @@ public class PrinterHelper {
         return isConnected;
     }
 
-    public void printVisitCard(Context mcontext,long recordId){
+    public void printVisitCard(Context mcontext, VisitRecordEntity recordEntity){
         //跳转到打印页面
         boolean isConnected = PrinterHelper.getInstance().isPrinterConnected();
         if(isConnected == false){
             Intent intent = new Intent(mcontext,PrinterSettingActivity.class);
             mcontext.startActivity(intent);
         }else{
+            //保存录入信息
+            long recordId = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+            //生成签离码
+            String checkCode = VisitRecordHelper.getInstance().getCheckCode(recordId);
+            PrinterHelper.getInstance().printVisitCard(checkCode);
+        }
+    }
+
+    public void printVisitCard(Context mcontext, long recordId){
+        //跳转到打印页面
+        boolean isConnected = PrinterHelper.getInstance().isPrinterConnected();
+        if(isConnected == false){
+            Intent intent = new Intent(mcontext,PrinterSettingActivity.class);
+            mcontext.startActivity(intent);
+        }else{
+            //生成签离码
             String checkCode = VisitRecordHelper.getInstance().getCheckCode(recordId);
             PrinterHelper.getInstance().printVisitCard(checkCode);
         }

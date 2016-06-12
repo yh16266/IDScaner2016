@@ -12,9 +12,11 @@ import android.widget.TextView;
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
+import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.common.base.BasePageAdapter;
 import com.haozi.idscaner2016.common.utils.StringUtil;
+import com.haozi.idscaner2016.printer.PrinterHelper;
 
 /**
  * Created by Haozi on 2016/5/4.
@@ -44,8 +46,12 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         holder.txv_bevisited.setText(entity.getBeVisited());
         if(StringUtil.isEmpty(entity.getCheckCode())){
             holder.txv_printstatu.setText("未打印");
+            holder.txv_print.setVisibility(View.VISIBLE);
+            holder.txv_print.setOnClickListener(this);
+            holder.txv_print.setTag(entity);
         }else{
             holder.txv_printstatu.setText("已打印（条形码："+entity.getCheckCode()+"）");
+            holder.txv_print.setVisibility(View.GONE);
         }
         if(entity.getLeaveTime() <= 0){
             holder.txv_leavetime.setText("未离开");
@@ -74,6 +80,7 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         viewHolder.txv_printstatu = (TextView) convertView.findViewById(R.id.txv_printstatu);
         viewHolder.txv_leavetime = (TextView) convertView.findViewById(R.id.txv_leavetime);
         viewHolder.txv_leave = (TextView) convertView.findViewById(R.id.txv_leave);
+        viewHolder.txv_print = (TextView) convertView.findViewById(R.id.txv_print);
         convertView.setTag(viewHolder);
         return convertView;
     }
@@ -83,6 +90,16 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         switch (view.getId()){
             case R.id.txv_leave:
                 setLeave(view);
+                break;
+            case R.id.txv_print:
+                if(view.getTag() != null && view.getTag() instanceof VisitRecordEntity){
+                    VisitRecordEntity entity = (VisitRecordEntity) view.getTag();
+                    if(entity.getId() > 0){
+                        PrinterHelper.getInstance().printVisitCard(mContext,entity.getId());
+                    }else{
+                        DXToast.show("请选择有效的记录");
+                    }
+                }
                 break;
         }
     }
@@ -100,6 +117,7 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         TextView txv_printstatu;
         TextView txv_leavetime;
         TextView txv_leave;
+        TextView txv_print;
     }
 
     private void setLeave(View view){

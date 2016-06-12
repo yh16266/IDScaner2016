@@ -255,8 +255,20 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
      * @param idNum
      */
     public VisitRecordEntity getRecord(String idNum) {
+		return getRecord(idNum,-1);
+	}
+
+    /**
+     * 查询记录
+     * @param idNum
+     */
+    public VisitRecordEntity getRecord(String idNum,long visitTime) {
 		VisitRecordEntity entity = null;
-		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(),Table.IDCARD_IDNUM + "='" + idNum +"'");
+		String whereStr = Table.IDCARD_IDNUM + "='" + idNum +"'";
+		if(visitTime > 0){
+			whereStr = whereStr + " and "+Table.VISIT_TIME + "=" + visitTime;
+		}
+		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(),whereStr);
 		if(csr != null) {
 			if(csr.moveToFirst()) {
 				entity = refreshTableEntity(csr);
@@ -273,8 +285,8 @@ public class VisitRecordTable extends BaseTable<VisitRecordEntity> {
     public VisitRecordEntity getRecordNotLeave(String idNum) {
 		VisitRecordEntity entity = null;
 		StringBuffer whereStr = new StringBuffer(Table.IDCARD_IDNUM).append("='").append(idNum).append("' ");
-		whereStr.append(" AND (").append(Table.VISIT_TIME).append(" IS NULL");
-		whereStr.append(" OR ").append(Table.VISIT_TIME).append(" <= 0 )");
+		whereStr.append(" AND (").append(Table.VISIT_LEAVETIME).append(" IS NULL");
+		whereStr.append(" OR ").append(Table.VISIT_LEAVETIME).append(" <= 0 )");
 		Cursor csr = SqliteUtils.getInstance().getCursor(getTableName(), whereStr.toString());
 		if(csr != null) {
 			if(csr.moveToFirst()) {

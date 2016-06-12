@@ -274,6 +274,10 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             if(radioGroup_type.getCheckedRadioButtonId() == R.id.radio_person){
                 cleanVisitInfo(false);
             }
+            //刷新来访时间
+            long visitTime = System.currentTimeMillis();
+            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(visitTime));
+            ViewUtils.setViewTag(this,R.id.txv_time, visitTime);
             //查询是否已登记并且未登记离开，若成立，则提示离开登记
             String mIdNum = ViewUtils.getTextViewString(this,R.id.tv_idnumber);
             if(!StringUtil.isEmpty(mIdNum)){
@@ -283,10 +287,6 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                     return;
                 }
             }
-            //刷新来访时间
-            long visitTime = System.currentTimeMillis();
-            ViewUtils.setTextViewTxt(this,R.id.txv_time, DateUtil.convertDateYYYYMMddHHmm(visitTime));
-            ViewUtils.setViewTag(this,R.id.txv_time, visitTime);
         }else{
             //cleanIDInfo();
         }
@@ -359,6 +359,12 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
             DXToast.show("请先扫描身份证，然后再签字登记！");
             return;
         }
+        //如果有未签离记录，请先执行签离
+        VisitRecordEntity mRecord = VisitRecordHelper.getInstance().getRecordNotLeave(mBCardInfo.id);
+        if(mRecord != null){
+            LeaveConfirmDialog.showByIdNum(this,mBCardInfo.id);
+            return;
+        }
         DXSignPop signPop = new DXSignPop(this);
         signPop.setSignCallback(new DXSignPop.SignCacllBack() {
             @Override
@@ -414,11 +420,15 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         if(recordEntity == null){
             return;
         }
-        //保存录入信息
-        long newID = VisitRecordHelper.getInstance().saveVisitInfo(recordEntity);
+        //如果有未签离记录，请先执行签离
+        VisitRecordEntity mRecord = VisitRecordHelper.getInstance().getRecordNotLeave(recordEntity.getIdNum());
+        if(mRecord != null){
+            LeaveConfirmDialog.showByIdNum(this,recordEntity.getIdNum());
+            return;
+        }
         //long newID = 0;
-        //跳转到打印页面
-        PrinterHelper.getInstance().printVisitCard(this,newID);
+        //跳转到打印页面(打印并保存)
+        PrinterHelper.getInstance().printVisitCard(this,recordEntity);
     }
 
     private VisitRecordEntity refershRecordInfo(){

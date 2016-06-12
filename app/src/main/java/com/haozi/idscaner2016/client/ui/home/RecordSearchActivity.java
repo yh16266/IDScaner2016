@@ -138,8 +138,8 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        VisitRecordEntity entity =  mAdapter.getItemEntity(position-1);
-        PrinterHelper.getInstance().printVisitCard(this,entity.getId());
+        //VisitRecordEntity entity =  mAdapter.getItemEntity(position-1);
+        //PrinterHelper.getInstance().printVisitCard(this,entity.getId());
     }
 
     @Override

@@ -84,10 +84,17 @@
             tools:text="15822331144"
             android:id="@+id/txv_contract"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:textSize="@dimen/font_size_55"
             android:text="车牌号码："/>
 
@@ -193,11 +200,19 @@
                 android:ellipsize="end"
                 tools:text="已打印"
                 android:id="@+id/txv_printstatu"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/font_size_55"
-                android:layout_marginLeft="20dp"
                 android:text="离开时间："/>
 
             <TextView
@@ -211,19 +226,42 @@
 
         </LinearLayout>
 
-
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="100dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:visibility="gone"
         android:padding="10dp"
         android:gravity="center"
         android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+        android:text="打印"
+        android:id="@+id/txv_print" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="100dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:gravity="center"
+        android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
         android:text="人工签离"
         android:id="@+id/txv_leave" />
+
+    </LinearLayout>
 
 </LinearLayout>

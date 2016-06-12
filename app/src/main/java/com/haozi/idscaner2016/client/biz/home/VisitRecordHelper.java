@@ -41,7 +41,7 @@ public class VisitRecordHelper extends BaseObject {
 
     public long saveVisitInfo(VisitRecordEntity record) {
         VisitRecordTable.getInstance().insertUpdateRecord(record);
-        VisitRecordEntity entity = VisitRecordTable.getInstance().getRecord(record.getIdNum());
+        VisitRecordEntity entity = VisitRecordTable.getInstance().getRecord(record.getIdNum(),record.visitTime);
         if(entity != null){
             return entity.getId();
         }

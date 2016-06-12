@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 
 import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.constants.IActionIntent;
 import com.haozi.idscaner2016.printer.PrinterHelper;
@@ -73,7 +74,22 @@ public class PrinterSettingActivity extends BaseCompatActivity {
             btn_connect.setText(connStr);
         }else{
             btn_connect.setText(R.string.disconnect);
+            DXToast.show("连接打印机成功");
+            if(mConnectPriterCallback != null){
+                mConnectPriterCallback.connectSuccess();
+            }
+            finish();
         }
+    }
+
+    public interface ConnectPriterCallback{
+        public void connectSuccess();
+    }
+
+    private static ConnectPriterCallback mConnectPriterCallback;
+
+    public static void setPrinterConnectCallback(ConnectPriterCallback callback){
+        mConnectPriterCallback = callback;
     }
 
     @Override
