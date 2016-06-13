@@ -137,6 +137,8 @@ public class PrinterHelper {
             //生成签离码
             String checkCode = VisitRecordHelper.getInstance().getCheckCode(recordId);
             PrinterHelper.getInstance().printVisitCard(checkCode);
+            //发送清理信息通知
+            mcontext.sendBroadcast(new Intent(IActionIntent.ACTION_INFO_CLEAN));
         }
     }
 

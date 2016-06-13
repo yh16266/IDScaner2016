@@ -128,14 +128,15 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         if(entity == null){
             return;
         }
-        AlertDialog.Builder builder=new AlertDialog.Builder(mContext);  //先得到构造器
+        //先得到构造器
+        AlertDialog.Builder builder=new AlertDialog.Builder(mContext);
         builder.setTitle("人工签离");
         //设置列表显示，注意设置了列表显示就不要设置builder.setMessage()了，否则列表不起作用。
         builder.setMessage("请确实是否手动对该用户执行签离操作？");
         builder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                VisitRecordHelper.getInstance().visiterLeave(entity.getIdNum());
+                VisitRecordHelper.getInstance().visiterLeave(entity.getId());
                 entity.setLeaveTime(System.currentTimeMillis());
                 notifyDataSetChanged();
                 dialog.dismiss();

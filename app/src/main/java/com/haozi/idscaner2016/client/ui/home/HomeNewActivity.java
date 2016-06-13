@@ -1,8 +1,11 @@
 package com.haozi.idscaner2016.client.ui.home;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +39,7 @@ import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
+import com.haozi.idscaner2016.constants.IActionIntent;
 import com.haozi.idscaner2016.printer.PrinterHelper;
 import com.routon.idr.idrinterface.readcard.ReadType;
 
@@ -61,9 +65,12 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     private TextView txv_unit;
     private RadioGroup radioGroup_type;
 
+    private BroadcastReceiver mBroadcastRecevier;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerBroadCastReciver();
         setContentView(R.layout.home_activity);
     }
 
@@ -152,6 +159,22 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
 
     public Handler getMainHandler(){
         return mMainHandler;
+    }
+
+    private void registerBroadCastReciver(){
+        mBroadcastRecevier = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+            if(IActionIntent.ACTION_VISITOR_LEAVE.equals(intent.getAction()) ||
+                    IActionIntent.ACTION_INFO_CLEAN.equals(intent.getAction())){
+                cleanIDInfo();
+                cleanVisitInfo(true);
+            }
+            }
+        };
+        IntentFilter ift = new IntentFilter(IActionIntent.ACTION_VISITOR_LEAVE);
+        ift.addAction(IActionIntent.ACTION_INFO_CLEAN);
+        registerReceiver(mBroadcastRecevier,ift);
     }
 
     @Override

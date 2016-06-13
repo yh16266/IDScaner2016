@@ -48,8 +48,15 @@ public class VisitRecordHelper extends BaseObject {
         return -1;
     }
 
-    public void visiterLeave(String idNum){
-        VisitRecordEntity entity = VisitRecordTable.getInstance().getRecord(idNum);
+    public void visiterLeave(long recordId){
+        VisitRecordEntity entity = VisitRecordTable.getInstance().getRecord(recordId);
+        entity.setLeaveTime(System.currentTimeMillis());
+        VisitRecordTable.getInstance().updateRecordById(entity);
+        DXToast.show("访客："+entity.getName() + "已于" + entity.getLeaveTimeStr() +"登记离开");
+    }
+
+    public void visiterLeave(String idNum,long visitTime){
+        VisitRecordEntity entity = VisitRecordTable.getInstance().getRecord(idNum,visitTime);
         entity.setLeaveTime(System.currentTimeMillis());
         VisitRecordTable.getInstance().updateRecordByIDNum(entity);
         DXToast.show("访客："+entity.getName() + "已于" + entity.getLeaveTimeStr() +"登记离开");

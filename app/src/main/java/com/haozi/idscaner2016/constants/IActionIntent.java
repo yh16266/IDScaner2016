@@ -29,6 +29,12 @@ public class IActionIntent {
 	/** 广播：打印机链接通知 */
 	public static final String ACTION_PRINTER_CONNECTEDUPDATE = "ACTION_PRINTER_CONNECTEDUPDATE";
 
+	/** 广播：签离通知 */
+	public static final String ACTION_VISITOR_LEAVE = "ACTION_VISITOR_LEAVE";
+
+	/** 广播：清除信息 */
+	public static final String ACTION_INFO_CLEAN = "ACTION_INFO_CLEAN";
+
 	/*-------------------------------------------------参数常量-------------------------------------------------------*/
 	
 	/** 身份证号码 */

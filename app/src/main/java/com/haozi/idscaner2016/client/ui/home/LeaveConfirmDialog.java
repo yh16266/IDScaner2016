@@ -2,6 +2,7 @@ package com.haozi.idscaner2016.client.ui.home;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +11,9 @@ import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXToast;
+import com.haozi.idscaner2016.common.utils.DateUtil;
 import com.haozi.idscaner2016.common.utils.StringUtil;
+import com.haozi.idscaner2016.constants.IActionIntent;
 
 /**
  * Created by Haozi on 2016/5/7.
@@ -86,7 +89,7 @@ public class LeaveConfirmDialog extends Dialog implements View.OnClickListener{
             findViewById(R.id.button_confirm).setEnabled(false);
             dismiss();
         }else{
-            txv_time.setText(mRecord.getLeaveTimeStr());
+            txv_time.setText(mRecord.getVisitTimeStr());
             txv_unit.setText(mRecord.getVisitUnit());
             txv_contractway.setText(mRecord.getVisitContract());
             txv_carnum.setText(mRecord.getVisitCarnum());
@@ -111,7 +114,8 @@ public class LeaveConfirmDialog extends Dialog implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.button_confirm:
-                VisitRecordHelper.getInstance().visiterLeave(mRecord.getIdNum());
+                VisitRecordHelper.getInstance().visiterLeave(mRecord.getId());
+                mContext.sendBroadcast(new Intent(IActionIntent.ACTION_VISITOR_LEAVE));
                 dismiss();
                 break;
             case R.id.button_cancel:

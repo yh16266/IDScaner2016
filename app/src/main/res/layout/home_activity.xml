@@ -127,17 +127,18 @@
                     <TextView
                         android:id="@+id/txv_unit"
                         android:minWidth="200dp"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/card_text_white"
                         android:text="点我选择来访单位"/>
 
                     <EditText
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/card_text_white"
-                        android:hint="点我选择来访单位"
+                        android:hint="请输入来访单位"
                         tools:text="中科院四川分院"
                         android:id="@+id/edt_unit" />
 
