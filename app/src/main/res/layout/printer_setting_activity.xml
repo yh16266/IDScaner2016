@@ -86,7 +86,6 @@
                 android:id="@+id/width_58mm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="58mm"
                 android:textColor="#000" />
 
@@ -94,6 +93,7 @@
                 android:id="@+id/width_80mm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="80mm"
                 android:textColor="#000" />
 

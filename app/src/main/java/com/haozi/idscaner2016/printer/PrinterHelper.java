@@ -167,6 +167,8 @@ public class PrinterHelper {
     }
 
     private void printVisitInfo(VisitRecordEntity recordEntity){
+        mPrinter.printText("===========访客单==========");
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
 
         mPrinter.printText("来访人："+recordEntity.getName());
         // 换行
@@ -195,7 +197,7 @@ public class PrinterHelper {
             return;
         }
         // "QRCODE"
-        mPrinter.printText("签离码："+checkCode);
+        mPrinter.printText("单号："+checkCode);
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
 
         mPrinter.setCharacterMultiple(0, 0);

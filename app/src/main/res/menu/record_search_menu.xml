@@ -9,6 +9,6 @@
         android:orderInCategory="80"
         android:icon="@android:drawable/ic_menu_directions"
         android:title="导出"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|withText"/>
 
 </menu>
