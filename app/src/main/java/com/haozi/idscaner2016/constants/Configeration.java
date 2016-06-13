@@ -16,12 +16,12 @@ public class Configeration {
 	/**内置用户ID*/
 	public static final String USER_ADMIN_ACCOUNT = "admin";
 	/**内置用户ID*/
-	public static final String USER_ADMIN_PSW = "admin2016";
+	public static final String USER_ADMIN_PSW = "1234";
 	/**内置用户ID*/
 	public static final long USER_SECURE = 2016002;
 	/**内置用户ID*/
-	public static final String USER_SECURE_ACCOUNT = "secure";
+	public static final String USER_SECURE_ACCOUNT = "user";
 	/**内置用户ID*/
-	public static final String USER_SECURE_PSW = "secure2016";
+	public static final String USER_SECURE_PSW = "1";
 
 }

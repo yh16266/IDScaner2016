@@ -9,26 +9,27 @@
         android:orderInCategory="80"
         android:icon="@android:drawable/ic_menu_search"
         android:title="查询"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|withText"/>
 
     <item
         android:id="@+id/menu_sum"
         android:orderInCategory="80"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="统计"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|withText"/>
 
-    <item
-        android:id="@+id/menu_unit"
-        android:orderInCategory="80"
-        android:icon="@android:drawable/ic_menu_compass"
-        android:title="单位管理"
-        app:showAsAction="ifRoom"/>
+    <!--<item-->
+        <!--android:id="@+id/menu_unit"-->
+        <!--android:orderInCategory="80"-->
+        <!--android:icon="@android:drawable/ic_menu_compass"-->
+        <!--android:title="单位管理"-->
+        <!--app:showAsAction="ifRoom"/>-->
+
     <item
         android:id="@+id/menu_printer_setting"
         android:orderInCategory="80"
         android:icon="@android:drawable/ic_menu_manage"
         android:title="打印机设置"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|withText"/>
 
 </menu>

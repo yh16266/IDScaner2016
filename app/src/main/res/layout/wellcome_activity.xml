@@ -7,11 +7,21 @@
     android:id="@+id/lin_wellcome"
     android:background="@mipmap/wellcome_bg" >
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_size_110"
+        android:text="欢迎使用首度移动访客系统V1.0"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center_horizontal" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:layout_marginBottom="200dp"
         android:layout_gravity="center_horizontal">
 
         <LinearLayout
@@ -31,7 +41,7 @@
                 android:text="用户名："/>
 
             <EditText
-                android:layout_width="200dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textSize="@dimen/font_size_70"
@@ -64,7 +74,7 @@
                 android:text="密码："/>
 
             <EditText
-                android:layout_width="200dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:maxLength="40"
