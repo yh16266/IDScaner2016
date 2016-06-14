@@ -167,11 +167,16 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
         mBroadcastRecevier = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-            if(IActionIntent.ACTION_VISITOR_LEAVE.equals(intent.getAction()) ||
-                    IActionIntent.ACTION_INFO_CLEAN.equals(intent.getAction())){
-                cleanIDInfo();
-                cleanVisitInfo(true);
-            }
+                if(IActionIntent.ACTION_VISITOR_LEAVE.equals(intent.getAction())){
+                    cleanIDInfo();
+                    cleanVisitInfo(false);
+                }else if(IActionIntent.ACTION_INFO_CLEAN.equals(intent.getAction())){
+                    //如果是团队访问，则不会清理来访信息
+                    if(radioGroup_type.getCheckedRadioButtonId() == R.id.radio_person){
+                        cleanVisitInfo(false);
+                    }
+                    cleanIDInfo();
+                }
             }
         };
         IntentFilter ift = new IntentFilter(IActionIntent.ACTION_VISITOR_LEAVE);

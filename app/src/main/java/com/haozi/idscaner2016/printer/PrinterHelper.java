@@ -159,10 +159,13 @@ public class PrinterHelper {
         if(mPrinter != null){
             VisitRecordEntity recordEntity = VisitRecordHelper.getInstance().getRecordByCheckCode(checkCode);
             if(recordEntity == null){
+                DXToast.show("该单号无效");
                 return;
             }
             mPrinter.init();
             printVisitInfo(recordEntity);
+        }else{
+            DXToast.show("请连接打印机");
         }
     }
 
