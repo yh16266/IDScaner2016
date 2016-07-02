@@ -41,4 +41,6 @@ public class IActionIntent {
 	public static final String INTENTEXTRA_IDNUM = "INTENTEXTRA_IDNUM";
 	/** 记录ID */
 	public static final String INTENTEXTRA_RECORDID = "INTENTEXTRA_RECORDID";
+
+	public static final String INTENTEXTRA_IMG_URL = "INTENTEXTRA_IMG_URL";
 }

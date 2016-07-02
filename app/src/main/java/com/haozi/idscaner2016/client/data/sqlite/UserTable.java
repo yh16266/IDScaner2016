@@ -13,6 +13,9 @@ import com.haozi.idscaner2016.client.data.sqlite.base.BaseTableBody;
 import com.haozi.idscaner2016.client.data.sqlite.base.SqliteUtils;
 import com.haozi.idscaner2016.constants.Configeration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 类名：MessageTable
  * @author yinhao
@@ -127,6 +130,19 @@ public class UserTable extends BaseTable<Accounts> {
     }
 
 	/**
+	 * 插入更新记录
+	 * @param msg
+	 */
+	public void updateRecord(Accounts msg) {
+		if(msg == null){
+			return;
+		}
+		ContentValues cv = putContentValues(msg);
+		SqliteUtils.getInstance().update(cv, getTableName(), Table.ACCOUNT + "='" + msg.getUsername()+"'");
+	}
+
+
+	/**
      * 删除记录
      * @param account
      */
@@ -183,6 +199,21 @@ public class UserTable extends BaseTable<Accounts> {
     	return entity;
     }
 
+    /**
+     * 查询记录
+     */
+    public List<Accounts> getRecordList() {
+		List<Accounts> list = new ArrayList<>();
+    	Cursor csr = SqliteUtils.getInstance().getCursor(getTableName());
+		if(csr != null) {
+			while (csr.moveToNext()){
+				list.add(refreshTableEntity(csr));
+			}
+			csr.close();
+		}
+    	return list;
+    }
+
 	public void initUserData(){
 		Accounts admin = getRecord(Configeration.USER_ADMIN);
 		if(admin == null){
@@ -197,7 +228,7 @@ public class UserTable extends BaseTable<Accounts> {
 		Accounts secure = getRecord(Configeration.USER_SECURE);
 		if(secure == null){
 			Accounts newSecure = new Accounts();
-			newSecure.setNickname("保安");
+			newSecure.setNickname("保安人员");
 			newSecure.setUserId(Configeration.USER_SECURE);
 			newSecure.setUsername(Configeration.USER_SECURE_ACCOUNT);
 			newSecure.setPassword(Configeration.USER_SECURE_PSW);

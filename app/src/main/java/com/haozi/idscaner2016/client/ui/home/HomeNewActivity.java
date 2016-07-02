@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.android.print.PrinterSettingActivity;
 import com.haozi.idscaner2016.R;
+import com.haozi.idscaner2016.client.bean.EntityDitionary;
 import com.haozi.idscaner2016.client.bean.client.BCardInfo;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.cardread.MainMsg;
@@ -35,6 +36,8 @@ import com.haozi.idscaner2016.client.biz.home.UnityManageHelper;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXSignPop;
 import com.haozi.idscaner2016.client.control.DXToast;
+import com.haozi.idscaner2016.client.data.AccountHelper;
+import com.haozi.idscaner2016.client.data.sqlite.UserTable;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.DateUtil;
@@ -130,20 +133,38 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                Intent intent = new Intent(this,RecordSearchActivity.class);
-                startActivity(intent);
+                if(AccountHelper.getInstance().IsUserLogin() == false) {
+                    DXToast.show("请登陆!");
+                }else{
+                    Intent intent = new Intent(this,RecordSearchActivity.class);
+                    startActivity(intent);
+                }
                 break;
             case R.id.menu_sum:
-                intent = new Intent(this,RecordSumActivity.class);
-                startActivity(intent);
+                if(AccountHelper.getInstance().IsUserLogin() == false) {
+                    DXToast.show("请登陆!");
+                }else{
+                    Intent intent = new Intent(this,RecordSumActivity.class);
+                    startActivity(intent);
+                }
                 break;
 //            case R.id.menu_unit:
 //                intent = new Intent(this,UnitManageActivity.class);
 //                startActivity(intent);
 //                break;
             case R.id.menu_printer_setting:
-                intent = new Intent(this,PrinterSettingActivity.class);
+                Intent intent = new Intent(this,PrinterSettingActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.menu_user_setting:
+                if(AccountHelper.getInstance().IsUserLogin() == false) {
+                    DXToast.show("请登陆!");
+                }else if(EntityDitionary.UserType.admin == AccountHelper.getInstance().getMyinfo().UserType()){
+                    intent = new Intent(this, PrinterSettingActivity.class);
+                    startActivity(intent);
+                }else{
+                    DXToast.show("只有管理员能执行此操作");
+                }
                 break;
             default:
                 break;

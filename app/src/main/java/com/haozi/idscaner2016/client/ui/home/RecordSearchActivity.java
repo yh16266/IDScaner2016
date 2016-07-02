@@ -117,6 +117,10 @@ public class RecordSearchActivity extends PullRefreshAcitivity<VisitRecordEntity
     }
 
     private void outputRecord(){
+        if(AccountHelper.getInstance().IsUserLogin() == false) {
+            DXToast.show("请登陆以后再导出数据");
+            return;
+        }
         showProgress("查询数据中...");
         String date = ViewUtils.getEditString(this,R.id.edt_visittime);
         String idnum = ViewUtils.getEditString(this,R.id.edt_idnum);

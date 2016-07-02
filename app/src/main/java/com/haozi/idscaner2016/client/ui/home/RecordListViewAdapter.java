@@ -3,6 +3,7 @@ package com.haozi.idscaner2016.client.ui.home;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,12 @@ import android.widget.TextView;
 import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
+import com.haozi.idscaner2016.client.control.DXImageDisplayActivity;
 import com.haozi.idscaner2016.client.control.DXToast;
 import com.haozi.idscaner2016.client.data.sqlite.VisitRecordTable;
 import com.haozi.idscaner2016.common.base.BasePageAdapter;
 import com.haozi.idscaner2016.common.utils.StringUtil;
+import com.haozi.idscaner2016.constants.IActionIntent;
 import com.haozi.idscaner2016.printer.PrinterHelper;
 
 /**
@@ -37,7 +40,15 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         VisitRecordEntity entity = mData.get(position);
         holder.txv_name.setText(entity.getName());
         holder.txv_sex.setText(entity.getSex());
-        holder.txv_idnum.setText(entity.getIdNum());
+        String idNumStr = entity.getIdNum();
+        if(!StringUtil.isEmpty(idNumStr) && idNumStr.length() > 7){
+            if(idNumStr.length() - 7 > 6){
+                idNumStr = idNumStr.substring(0,7)+"****";
+            }else{
+                idNumStr = idNumStr.substring(0,7)+"****"+idNumStr.substring(13);
+            }
+        }
+        holder.txv_idnum.setText(idNumStr);
         holder.txv_visitetime.setText(entity.getVisitTimeStr());
         holder.txv_contract.setText(entity.getVisitContract());
         holder.txv_carnum.setText(entity.getVisitCarnum());
@@ -62,6 +73,13 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
             holder.txv_leavetime.setText(entity.getLeaveTimeStr());
             holder.txv_leave.setVisibility(View.GONE);
         }
+        if(StringUtil.isEmpty(entity.getVisitSign())){
+            holder.txv_checksign.setVisibility(View.GONE);
+        }else{
+            holder.txv_checksign.setVisibility(View.VISIBLE);
+            holder.txv_checksign.setTag(entity.getVisitSign());
+            holder.txv_checksign.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -81,6 +99,7 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         viewHolder.txv_leavetime = (TextView) convertView.findViewById(R.id.txv_leavetime);
         viewHolder.txv_leave = (TextView) convertView.findViewById(R.id.txv_leave);
         viewHolder.txv_print = (TextView) convertView.findViewById(R.id.txv_print);
+        viewHolder.txv_checksign = (TextView) convertView.findViewById(R.id.txv_checksign);
         convertView.setTag(viewHolder);
         return convertView;
     }
@@ -90,6 +109,13 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         switch (view.getId()){
             case R.id.txv_leave:
                 setLeave(view);
+                break;
+            case R.id.txv_checksign:
+                if(view.getTag() != null && !StringUtil.isEmpty(view.getTag().toString())){
+                    Intent intent = new Intent(mContext, DXImageDisplayActivity.class);
+                    intent.putExtra(IActionIntent.INTENTEXTRA_IMG_URL,view.getTag().toString());
+                    mContext.startActivity(intent);
+                }
                 break;
             case R.id.txv_print:
                 if(view.getTag() != null && view.getTag() instanceof VisitRecordEntity){
@@ -118,6 +144,7 @@ public class RecordListViewAdapter extends BasePageAdapter<VisitRecordEntity> im
         TextView txv_leavetime;
         TextView txv_leave;
         TextView txv_print;
+        TextView txv_checksign;
     }
 
     private void setLeave(View view){

@@ -233,34 +233,57 @@
         android:layout_marginLeft="20dp"
         android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="100dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:visibility="gone"
-        android:padding="10dp"
-        android:gravity="center"
-        android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-        android:text="打印"
-        android:id="@+id/txv_print" />
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="100dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"
-        android:padding="10dp"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
         android:gravity="center"
-        android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
-        android:text="人工签离"
-        android:id="@+id/txv_leave" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:padding="10dp"
+            android:gravity="center"
+            android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+            android:text="查看签名"
+            android:id="@+id/txv_checksign" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:padding="10dp"
+            android:gravity="center"
+            android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+            android:text="打印"
+            android:id="@+id/txv_print" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:padding="10dp"
+            android:gravity="center"
+            android:background="@drawable/edittext_roundcorner_greylight_shape_xml"
+            android:text="人工签离"
+            android:id="@+id/txv_leave" />
 
     </LinearLayout>
 

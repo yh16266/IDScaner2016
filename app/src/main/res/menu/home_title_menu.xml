@@ -32,4 +32,11 @@
         android:title="打印机设置"
         app:showAsAction="ifRoom|withText"/>
 
+    <item
+        android:id="@+id/menu_user_setting"
+        android:orderInCategory="80"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="账户设置"
+        app:showAsAction="ifRoom|withText"/>
+
 </menu>

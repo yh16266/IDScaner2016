@@ -46,6 +46,7 @@ public class WellcomeActivity extends BaseCompatActivity {
 
 	protected void initView(){
 		findViewById(R.id.btn_login).setOnClickListener(this);
+		findViewById(R.id.txv_unlogin).setOnClickListener(this);
 		String lastAccount = AccountHelper.getLastAccount();
 		if(!StringUtil.isEmpty(lastAccount)){
 			ViewUtils.setEditTextTxt(this,R.id.edt_username,lastAccount);
@@ -59,6 +60,9 @@ public class WellcomeActivity extends BaseCompatActivity {
 		switch (v.getId()){
 			case R.id.btn_login:
 				login();
+				break;
+			case R.id.txv_unlogin:
+				gotoMain();
 				break;
 		}
 	}
