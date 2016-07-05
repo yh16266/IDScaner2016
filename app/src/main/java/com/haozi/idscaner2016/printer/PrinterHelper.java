@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 
@@ -19,6 +20,7 @@ import com.haozi.idscaner2016.R;
 import com.haozi.idscaner2016.client.bean.client.VisitRecordEntity;
 import com.haozi.idscaner2016.client.biz.home.VisitRecordHelper;
 import com.haozi.idscaner2016.client.control.DXToast;
+import com.haozi.idscaner2016.client.utils.BitmapUtil;
 import com.haozi.idscaner2016.common.app.MyApp;
 import com.haozi.idscaner2016.common.utils.StringUtil;
 import com.haozi.idscaner2016.common.utils.SystemUtil;
@@ -176,7 +178,15 @@ public class PrinterHelper {
         mPrinter.printText("来访人："+recordEntity.getName());
         // 换行
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
-        mPrinter.printText("身份证号："+recordEntity.getIdNum());
+        String idNumStr = recordEntity.getIdNum();
+        if(!StringUtil.isEmpty(idNumStr) && idNumStr.length() > 7){
+            if(idNumStr.length() - 7 > 6){
+                idNumStr = idNumStr.substring(0,7)+"****";
+            }else{
+                idNumStr = idNumStr.substring(0,7)+"****"+idNumStr.substring(13);
+            }
+        }
+        mPrinter.printText("身份证号："+idNumStr);
         // 换行
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
         mPrinter.printText("来访时间："+recordEntity.getVisitTimeStr());
@@ -189,6 +199,18 @@ public class PrinterHelper {
         // 换行
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
         mPrinter.printText("被访人："+recordEntity.getBeVisited());
+        // 换行
+        mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
+        if(StringUtil.isEmpty(recordEntity.getVisitSign())){
+            mPrinter.printText("签字：未签字");
+        }else{
+            Bitmap signimg = BitmapUtil.getScaleBitmap(recordEntity.getVisitSign(),400,400,0);
+            if(signimg == null){
+                mPrinter.printText("签字：签字文件丢失");
+            }else{
+                mPrinter.printImage(signimg);
+            }
+        }
 
         //打印访问码
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);

@@ -160,7 +160,7 @@ public class HomeNewActivity extends BaseCompatActivity implements ReadInfoCallb
                 if(AccountHelper.getInstance().IsUserLogin() == false) {
                     DXToast.show("请登陆!");
                 }else if(EntityDitionary.UserType.admin == AccountHelper.getInstance().getMyinfo().UserType()){
-                    intent = new Intent(this, PrinterSettingActivity.class);
+                    intent = new Intent(this, UserSettingActivity.class);
                     startActivity(intent);
                 }else{
                     DXToast.show("只有管理员能执行此操作");
