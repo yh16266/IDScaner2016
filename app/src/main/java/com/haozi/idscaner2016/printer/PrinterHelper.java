@@ -195,7 +195,7 @@ public class PrinterHelper {
         mPrinter.printText("来访事由："+recordEntity.getVisitReson());
         // 换行
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
-        mPrinter.printText("被访单位："+recordEntity.getVisitUnit());
+        mPrinter.printText("来访单位："+recordEntity.getVisitUnit());
         // 换行
         mPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_NEWLINE);
         mPrinter.printText("被访人："+recordEntity.getBeVisited());

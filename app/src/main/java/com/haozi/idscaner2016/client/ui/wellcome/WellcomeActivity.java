@@ -19,6 +19,7 @@ import com.haozi.idscaner2016.client.data.AccountHelper;
 import com.haozi.idscaner2016.client.data.sqlite.UserTable;
 import com.haozi.idscaner2016.client.ui.home.CodeScanActivity;
 import com.haozi.idscaner2016.client.ui.home.HomeNewActivity;
+import com.haozi.idscaner2016.client.ui.home.UserSettingActivity;
 import com.haozi.idscaner2016.client.utils.ViewUtils;
 import com.haozi.idscaner2016.common.base.BaseCompatActivity;
 import com.haozi.idscaner2016.common.utils.StringUtil;
@@ -96,7 +97,7 @@ public class WellcomeActivity extends BaseCompatActivity {
 	private void gotoMain() {
 		Intent intent = new Intent();
 		intent.setClass(this, HomeNewActivity.class);
-//		intent.setClass(this, CodeScanActivity.class);
+//		intent.setClass(this, UserSettingActivity.class);
 		startActivity(intent);
 		finish();
 	}

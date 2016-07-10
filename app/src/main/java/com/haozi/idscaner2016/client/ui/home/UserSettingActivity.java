@@ -1,5 +1,6 @@
 package com.haozi.idscaner2016.client.ui.home;
 
+import android.accounts.Account;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,6 +39,10 @@ public class UserSettingActivity extends BaseCompatActivity{
         spinner_user=(Spinner)findViewById(R.id.spinner_user);
         userlist = UserTable.getInstance().getRecordList();
         String[] nameList = new String[userlist.size()];
+        for(int i=0;i<userlist.size();i++){
+            Accounts item = userlist.get(i);
+            nameList[i] = item.UserType().getName();
+        }
         spinnerAdapter= new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, nameList);
         spinner_user.setAdapter(spinnerAdapter);
         spinner_user.setOnItemSelectedListener(new MyOnItemSelectedListener());

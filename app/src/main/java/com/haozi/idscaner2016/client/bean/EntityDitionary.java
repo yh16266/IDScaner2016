@@ -18,16 +18,18 @@ public class EntityDitionary {
 	public enum UserType{
 
 		/**管理员*/
-		admin(1),
+		admin(1,"管理员"),
 		/**保安*/
-		secure(2),
+		secure(2,"保安"),
 		/**访客*/
-		visitor(3);
+		visitor(3,"访客");
 
     	private int mValue;
-    	
-    	private UserType(int value){
+    	private String mName;
+
+    	private UserType(int value,String name){
     		mValue = value;
+			mName = name;
     	}
     	
     	public int getValue(){
@@ -36,6 +38,10 @@ public class EntityDitionary {
 
     	public String getValueStr(){
     		return String.valueOf(mValue);
+    	}
+
+    	public String getName(){
+    		return mName;
     	}
 
 		public static UserType ValueOf(String valueStr) {
